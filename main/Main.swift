@@ -26,7 +26,7 @@ func app_main() {
         let red = UInt8((sin(Double(time/redTicks)))*255)
         let green = UInt8((sin(Double(time/greenTicks)))*255)
         let blue = UInt8((sin(Double(time/blueTicks)))*255)
-        rgbLed.setColor(RGBColor(red: red, green: green, blue: blue))
+        rgbLed.setColor(RGBColor(r: red, g: green, b: blue))
         time += 1
         vTaskDelay(1)
         //print ("\red:\(red), green:\(green), blue:\(blue)")

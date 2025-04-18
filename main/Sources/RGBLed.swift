@@ -4,11 +4,7 @@
 //
 //  Created by Łukasz Dziedzic on 09/04/2025.
 //
-struct RGB<T> {
-    var r: T
-    var g: T
-    var b: T
-}
+
 
 struct RGBLed {
     enum Error: Swift.Error {
@@ -76,11 +72,6 @@ struct RGBLed {
         self.configR   = red
         self.configG = green
         self.configB  = blue
-        
-        
-        
-        
-        
     }
     
     func setColor(r: UInt8, g: UInt8, b: UInt8) {
@@ -90,7 +81,7 @@ struct RGBLed {
     }
     
     func setColor(_ color: RGBColor) {
-        setColor(red: color.red, green: color.green, blue: color.blue)
+        setColor(r: color.r, g: color.g, b: color.b)
     }
     
     private func setDuty(channel: ledc_channel_config_t, duty: UInt8) {
