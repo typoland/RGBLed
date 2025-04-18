@@ -16,17 +16,36 @@ struct RGBLed {
         case channelConfigurationFailed(String)
     }
     
-    //let channels: Channels
-    //let setup: Setup
-    
     var ledcTimerConfig: ledc_timer_config_t
-    var redChannel: ledc_channel_config_t
-    var greenChannel: ledc_channel_config_t
-    var blueChannel: ledc_channel_config_t
+    var configR: ledc_channel_config_t
+    var configG: ledc_channel_config_t
+    var configB: ledc_channel_config_t
     
     init(channels: RGB<ledc_channel_t>, gpios: RGB<Int32>) 
     throws (RGBLed.Error) 
     {
+        func configureChannel(_ channel: ledc_channel_t, 
+                              gpio: Int32, 
+                              timerConfig: ledc_timer_config_t) 
+        throws (RGBLed.Error) -> ledc_channel_config_t {
+            var ledcChannelConfig = ledc_channel_config_t(
+                gpio_num:   gpio,
+                speed_mode: timerConfig.speed_mode,
+                channel:    channel,
+                intr_type:  LEDC_INTR_FADE_END,//LEDC_INTR_DISABLE,
+                timer_sel:  timerConfig.timer_num,
+                duty:  0,
+                hpoint: 0,
+                sleep_mode: LEDC_SLEEP_MODE_NO_ALIVE_NO_PD,
+                flags: .init()
+            )
+            switch runEsp ({ledc_channel_config(&ledcChannelConfig)}) {
+            case .success: return ledcChannelConfig
+            case .failure(let s): 
+                throw Error.channelConfigurationFailed(s)
+            }
+        } 
+        
         var config = ledc_timer_config_t(
             speed_mode:      LEDC_LOW_SPEED_MODE,
             duty_resolution: LEDC_TIMER_13_BIT,
@@ -54,38 +73,20 @@ struct RGBLed {
             timerConfig: config)
         
         self.ledcTimerConfig = config
-        self.redChannel   = red
-        self.greenChannel = green
-        self.blueChannel  = blue
+        self.configR   = red
+        self.configG = green
+        self.configB  = blue
         
-        func configureChannel(_ channel: ledc_channel_t, 
-                                      gpio: Int32, 
-                                      timerConfig: ledc_timer_config_t) 
-        throws (RGBLed.Error) -> ledc_channel_config_t 
-        {
-            var ledcChannelConfig = ledc_channel_config_t(
-                gpio_num:   gpio,
-                speed_mode: timerConfig.speed_mode,
-                channel:    channel,
-                intr_type:  LEDC_INTR_FADE_END,//LEDC_INTR_DISABLE,
-                timer_sel:  timerConfig.timer_num,
-                duty:  0,
-                hpoint: 0,
-                sleep_mode: LEDC_SLEEP_MODE_NO_ALIVE_NO_PD,
-                flags: .init()
-            )
-            switch runEsp ({ledc_channel_config(&ledcChannelConfig)}) {
-            case .success: return ledcChannelConfig
-            case .failure(let s): 
-                throw Error.channelConfigurationFailed(s)
-            }
-        } 
+        
+        
+        
+        
     }
     
-    func setColor(red: UInt8, green: UInt8, blue: UInt8) {
-        setDuty(channel: greenChannel, duty: green)
-        setDuty(channel: blueChannel,  duty: blue)
-        setDuty(channel: redChannel,   duty: red)
+    func setColor(r: UInt8, g: UInt8, b: UInt8) {
+        setDuty(channel: configG, duty: g)
+        setDuty(channel: configB, duty: b)
+        setDuty(channel: configR, duty: r)
     }
     
     func setColor(_ color: RGBColor) {
