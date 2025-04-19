@@ -10,6 +10,7 @@ struct RGBLed {
     enum Error: Swift.Error {
         case ledcConfigError(String)
         case channelConfigurationFailed(String)
+        case fadeError(String)
     }
     
     var ledcTimerConfig: ledc_timer_config_t
@@ -89,7 +90,5 @@ struct RGBLed {
         ledc_set_duty(channel.speed_mode, channel.channel, dutyValue)
         ledc_update_duty(channel.speed_mode, channel.channel)
     }
-    
-  
 }
 
