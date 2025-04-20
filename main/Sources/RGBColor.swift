@@ -1,13 +1,35 @@
-struct RGB<T> {
+protocol ColorProtocol {
+    associatedtype Owner
+}
+
+struct RGB<T>: ColorProtocol {
+    typealias Owner = T
     var r: T
     var g: T
     var b: T
 }
 
-typealias RGBChannel = UInt8;
-typealias RGBColor = RGB<RGBChannel>
+struct Monochrome<T>: ColorProtocol {
+    typealias Owner = T
+    var value: T
+}
+typealias GPIO = Int32
 
-extension RGB where T == RGBChannel {
+typealias ColorValue = UInt8
+typealias RGBColor  = RGB<ColorValue>
+typealias MonoColor = Monochrome<ColorValue>
+
+
+typealias LedChannel = ledc_channel_t
+
+struct PWMChannelAssign<CH> {
+    var channel: CH
+    var gpio: GPIO
+}
+typealias LedChannelAssign = PWMChannelAssign<LedChannel>
+
+
+extension RGBColor {
     static var white      = RGBColor(r: 255, g: 255, b: 255)
     static var off        = RGBColor(r: 0,   g: 0,   b: 0)
     static var red        = RGBColor(r: 255, g: 0,   b: 0)
@@ -21,7 +43,13 @@ extension RGB where T == RGBChannel {
             b: .random(in: 0...16))
     }
 }
+extension MonoColor {
+    static var full = MonoColor(value: 255)
+    static var half = MonoColor(value: 127)
+    static var off  = MonoColor(value: 0)
+}
 
+/*
 //MARK: Active Channel
 enum ActiveChannel: String {
     case r
@@ -35,7 +63,7 @@ enum ActiveChannel: String {
         }
     }
 }
-extension RGB where T == RGBChannel {
+extension RGBColor  {
     func channel(_ channel: ActiveChannel) -> RGBColor {
         switch channel {
         case .r: return RGBColor(r: r, g: 0, b: 0) 
@@ -45,3 +73,4 @@ extension RGB where T == RGBChannel {
     }
 }
 
+*/

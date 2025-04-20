@@ -1,3 +1,6 @@
 build/
 managed_components/
 .DS_Store
+dependencies.lock
+repair.sh
+
