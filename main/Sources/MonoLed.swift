@@ -14,7 +14,10 @@ struct MonchromeLed: PWMLed {
         )
     }
     
-    func setBrightness(_ value: UInt8) {
-        setDuty(channel: channelConfig, duty: value)
+    func setBrightness(_ value: ColorValue) {
+        setDuty(config: channelConfig, duty: value)
+    }
+    func fadeTo(_ brightness: ColorValue, ms time: Int32 = 500) {
+        channelConfig.fade(to: timerConfig.rawDuty(brightness), ms: time)
     }
 }

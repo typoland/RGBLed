@@ -10,11 +10,19 @@ protocol PWMLed {
     var timerConfig: LedTimerConfig {get set}
 }
 
+
+
 extension PWMLed {
-    func setDuty(channel: LedChannelConfig, duty: UInt8) {
-        let dutyValue = UInt32(duty) * ((1 << timerConfig.duty_resolution.rawValue) - 1) / 255
-        ledc_set_duty(channel.speed_mode, channel.channel, dutyValue)
-        ledc_update_duty(channel.speed_mode, channel.channel)
+    func setDuty(config: LedChannelConfig, duty: UInt8) {
+        //let dutyValue = UInt32(duty) * ((1 << timerConfig.duty_resolution.rawValue) - 1) / 255
+        let rawDuty = timerConfig.rawDuty(duty)
+        //print ("in: \(duty)->\(rawDuty)")
+        ledc_set_duty(config.speed_mode, config.channel, rawDuty)
+        ledc_update_duty(config.speed_mode, config.channel)
+    }
+    
+    func getDuty(config: LedChannelConfig) -> UInt8 {
+        timerConfig.dutyFrom(raw: config.rawDuty)
     }
     
     static func configureTimer(
