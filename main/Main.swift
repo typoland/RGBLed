@@ -6,12 +6,8 @@ func app_main() {
         g: LedChannelAssign(channel: LEDC_CHANNEL_4, gpio: 2),
         b: LedChannelAssign(channel: LEDC_CHANNEL_5, gpio: 3)
     )
-    guard let rgbLed = try? RGBLed(channels: rgbLedChannels, timerNumber: LEDC_TIMER_2)
-    else { fatalError ("Failed to initialize RGB LED") }
+    let rgbLed = try! RGBLed(channels: rgbLedChannels, timerNumber: LEDC_TIMER_2)
     rgbLed.setColor(r: 30, g: 200, b: 0)
-    
-    
-    
     
     let redLedChannel = LedChannelAssign(channel: LEDC_CHANNEL_1, gpio: 10)    
     let redLed = try! MonchromeLed(channel: redLedChannel)

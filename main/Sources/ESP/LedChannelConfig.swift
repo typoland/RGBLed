@@ -1,29 +1,5 @@
-//
-//  RGBLed+Fade.swift
-//  
-//
-//  Created by Łukasz Dziedzic on 18/04/2025.
-//
-typealias FadeParameters = ledc_fade_param_config_t
 
-extension FadeParameters {
-    static func pulse(steps: UInt32, up: UInt32, down: UInt32) -> [FadeParameters] {
-        let maxDuty: UInt32 = (1 << 13) - 1 //
-        let fadeUp = ledc_fade_param_config_t(
-            dir: 1, 
-            cycle_num: up, 
-            scale: maxDuty/steps,
-            step_num: steps
-        )   
-        let fadeDn = ledc_fade_param_config_t(
-            dir: 0, 
-            cycle_num: down, 
-            scale: maxDuty/steps,
-            step_num: steps
-        )  
-        return [fadeUp, fadeDn]
-    }
-}
+typealias LedChannelConfig = ledc_channel_config_t
 
 extension LedChannelConfig {
     
@@ -60,15 +36,5 @@ extension LedChannelConfig {
         case .failure(let s): print ("\(s)")
         default: break
         }
-    }
-}
-
-extension LedTimerConfig {
-    func rawDuty<T:FixedWidthInteger>(_ duty:T) -> UInt32 {
-        UInt32(duty) * ((1 << duty_resolution.rawValue) - 1) / UInt32(T.max)
-    }
-    func dutyFrom<T:FixedWidthInteger>(raw: UInt32) -> T {
-        let i = (raw * UInt32(T.max) / (1 << duty_resolution.rawValue) + 1)
-        return T(i)
     }
 }

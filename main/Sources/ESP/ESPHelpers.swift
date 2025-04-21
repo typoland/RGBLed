@@ -1,4 +1,6 @@
 
+typealias GPIO = Int32
+
 public enum ESPError: Equatable {
     case failure(String)
     case success

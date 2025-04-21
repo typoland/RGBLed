@@ -9,23 +9,22 @@ struct RGB<T>: ColorProtocol {
     var b: T
 }
 
-struct Monochrome<T>: ColorProtocol {
-    typealias Owner = T
-    var value: T
-}
-typealias GPIO = Int32
+//struct Monochrome<T>: ColorProtocol {
+//    typealias Owner = T
+//    var value: T
+//}
+
 
 typealias ColorValue = UInt8
 typealias RGBColor  = RGB<ColorValue>
-typealias MonoColor = Monochrome<ColorValue>
+//typealias MonoColor = Monochrome<ColorValue>
 
-
-typealias LedChannel = ledc_channel_t
 
 struct PWMChannelAssign<CH> {
     var channel: CH
     var gpio: GPIO
 }
+
 typealias LedChannelAssign = PWMChannelAssign<LedChannel>
 
 
@@ -44,10 +43,10 @@ extension RGBColor {
             b: .random(in: 0...16))
     }
 }
-extension MonoColor {
-    static var full = MonoColor(value: 255)
-    static var half = MonoColor(value: 127)
-    static var off  = MonoColor(value: 0)
+extension ColorValue {
+    static var full = 255
+    static var half = 127
+    static var off  = 0
 }
 
 /*

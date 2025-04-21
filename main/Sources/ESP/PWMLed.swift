@@ -3,20 +3,13 @@ enum LedError: Swift.Error {
     case channelConfigurationFailed(String)
 }
 
-typealias LedTimerConfig = ledc_timer_config_t
-typealias LedChannelConfig = ledc_channel_config_t
-
 protocol PWMLed {
     var timerConfig: LedTimerConfig {get set}
 }
 
-
-
 extension PWMLed {
     func setDuty(config: LedChannelConfig, duty: UInt8) {
-        //let dutyValue = UInt32(duty) * ((1 << timerConfig.duty_resolution.rawValue) - 1) / 255
         let rawDuty = timerConfig.rawDuty(duty)
-        //print ("in: \(duty)->\(rawDuty)")
         ledc_set_duty(config.speed_mode, config.channel, rawDuty)
         ledc_update_duty(config.speed_mode, config.channel)
     }
