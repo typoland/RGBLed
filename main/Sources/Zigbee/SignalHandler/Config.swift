@@ -79,6 +79,26 @@ extension IdentifyClusterConfig {
         identify_time = ZCL.identifyTimeDefaultValue //UInt16(ESP_ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE) 
     }
 }
+//MARK: MANUFACTURER INFO 
+typealias Manufacturer = zcl_basic_manufacturer_info_t
+extension Manufacturer {
+    init(name: String = ManufactureData.name, 
+         identifier: String = ManufactureData.modelId) {
+        self.init()
+        
+        let n: [UInt8] = Array(name.utf8)
+        let i: [UInt8] = Array(identifier.utf8)
+        
+        let manufacturerBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: n.count)
+        manufacturerBuffer.initialize(from: n, count: n.count)
+        
+        let modelBuffer = UnsafeMutablePointer<UInt8>.allocate(capacity: i.count)
+        modelBuffer.initialize(from: i, count: i.count)
+        
+        manufacturer_name = UnsafeMutablePointer<CChar>(OpaquePointer(manufacturerBuffer))
+        model_identifier = UnsafeMutablePointer<CChar>(OpaquePointer(modelBuffer))
+    }
+}
 
 typealias GroupsClusterConfig = esp_zb_groups_cluster_cfg_t
 

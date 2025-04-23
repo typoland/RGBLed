@@ -21,6 +21,7 @@
 #include <esp_adc/adc_oneshot.h>
 #include <esp_adc/adc_continuous.h>
 #include <esp_pm.h>
+#include <zcl_utility.h>
 //#include <esp_zigbee_console.h>
 //#include <esp_zigbee_all_device_types_app.h>
 //void app_nvs_init(void);

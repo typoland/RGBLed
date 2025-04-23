@@ -2,6 +2,7 @@
 idf_component_register(
     SRCS /dev/null # We don't have any C++ sources
     PRIV_INCLUDE_DIRS "."
+    "/Users/lukasz/esp/esp-zigbee-sdk/examples/common/zcl_utility/include"
 )
 
 idf_build_get_property(target IDF_TARGET)
@@ -65,7 +66,8 @@ file(GLOB_RECURSE SWIFT_SOURCES
 file(GLOB_RECURSE C_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Sources/*.c"
 )
-
+#/Users/lukasz/esp/esp-idf/examples/zigbee/common/zcl_utility/include/zcl_utility.h
+#/Users/lukasz/esp/esp-zigbee-sdk/examples/common/zcl_utility/include/zcl_utility.h
 
 target_sources(${COMPONENT_LIB}
     PRIVATE
@@ -82,3 +84,4 @@ add_custom_command(
     COMMAND ${CMAKE_OBJCOPY} --remove-section .swift_modhash
             $<TARGET_FILE:${COMPONENT_LIB}> $<TARGET_FILE:${COMPONENT_LIB}>
 )
+

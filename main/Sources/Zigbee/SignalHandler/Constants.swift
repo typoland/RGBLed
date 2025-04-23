@@ -6,8 +6,11 @@
 //
 
    
-
-
+struct ManufactureData {
+    static var name = "ESPRESSIF"
+    static var modelId = "esp32h2"
+}
+/*
 struct ZCL {
     struct Basic {
         static var zclVersion: UInt8                  = 0x08  // ESP_ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE
@@ -83,7 +86,7 @@ struct ZCL {
 //        }
     }
 }
-
+*/
 //
 // ** @brief Default value for ZCL version attribute */
 //#define ESP_ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE ((uint8_t)0x08)
