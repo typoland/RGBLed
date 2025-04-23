@@ -24,15 +24,15 @@ extension ColorDimmableLightConfig {
 class ColorDimmableLight {
     static let endpoint: UInt8 = 10 //HA_COLOR_DIMMABLE_LIGHT_ENDPOINT  10
     
-    var p: UnsafeMutablePointer<esp_zb_ep_list_s>?
-    var config: ColorDimmableLightConfig
+    var listPointer: UnsafeMutablePointer<esp_zb_ep_list_s>? // esp_zb_ep_list_t?
+    //var config: ColorDimmableLightConfig
     
     init(lightConfig: ColorDimmableLightConfig? = nil) {
         var config = lightConfig ?? ColorDimmableLightConfig.default
-        self.p = Self.colorDimmableLightEndPointCreate(
+        self.listPointer = Self.colorDimmableLightEndPointCreate(
             Self.endpoint, 
             &config)
-        self.config = config
+        //self.config = config
     }
     
     @_silgen_name("esp_zb_color_dimmable_light_ep_create")

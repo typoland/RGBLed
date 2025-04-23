@@ -62,8 +62,8 @@ extension PlatformConfig {
 //MARK:  BASIC CLUSTER CONFIG 
 typealias BasicClusterConfig = esp_zb_basic_cluster_cfg_t
 extension BasicClusterConfig {
-    init (zclVersion: UInt8 = ZCLBasic.zclVersion,
-          powerSource: UInt8 = ZCLBasic.powerSource) 
+    init (zclVersion: UInt8 = ZCL.Basic.zclVersion,
+          powerSource: UInt8 = ZCL.Basic.powerSource) 
     {
         self.init()
         zcl_version =  zclVersion
@@ -74,10 +74,9 @@ extension BasicClusterConfig {
 //MARK:  IDENTIFY CLUSTER CONFIG 
 typealias IdentifyClusterConfig = esp_zb_identify_cluster_cfg_t
 extension IdentifyClusterConfig {
-    static var `default` : IdentifyClusterConfig {
-        IdentifyClusterConfig (
-            identify_time: UInt16(ESP_ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE),  
-        )
+    init () {
+        self.init()
+        identify_time = ZCL.identifyTimeDefaultValue //UInt16(ESP_ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE) 
     }
 }
 

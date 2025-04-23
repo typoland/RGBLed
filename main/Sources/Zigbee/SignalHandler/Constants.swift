@@ -5,39 +5,85 @@
 //  Created by Łukasz Dziedzic on 23/04/2025.
 //
 
-struct ZCLBasic {
-    static var zclVersion: UInt8                  = 0x08  // ESP_ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE
-    static var applicationVersion: UInt8          = 0x00  // ESP_ZB_ZCL_BASIC_APPLICATION_VERSION_DEFAULT_VALUE
-    static var stackVersion: UInt8                = 0x00  // ESP_ZB_ZCL_BASIC_STACK_VERSION_DEFAULT_VALUE
-    static var hardwareVersion: UInt8             = 0x00  // ESP_ZB_ZCL_BASIC_HW_VERSION_DEFAULT_VALUE
-    static var powerSource: UInt8                 = 0x00  // ESP_ZB_ZCL_BASIC_POWER_SOURCE_DEFAULT_VALUE
-    static var genericDeviceClass: UInt8          = 0xFF  // ESP_ZB_ZCL_BASIC_GENERIC_DEVICE_CLASS_DEFAULT_VALUE
-    static var genericDeviceType: UInt8           = 0xFF  // ESP_ZB_ZCL_BASIC_GENERIC_DEVICE_TYPE_DEFAULT_VALUE
-    static var physicalEnvironment: UInt8         = 0x00  // ESP_ZB_ZCL_BASIC_PHYSICAL_ENVIRONMENT_DEFAULT_VALUE
-    static var deviceEnabled: Bool                = true  // ESP_ZB_ZCL_BASIC_DEVICE_ENABLED_DEFAULT_VALUE
-    static var alarmMask: UInt8                   = 0x00  // ESP_ZB_ZCL_BASIC_ALARM_MASK_DEFAULT_VALUE
-    static var disableLocalConfig: UInt8          = 0x00  // ESP_ZB_ZCL_BASIC_DISABLE_LOCAL_CONFIG_DEFAULT_VALUE
+   
+
+
+struct ZCL {
+    struct Basic {
+        static var zclVersion: UInt8                  = 0x08  // ESP_ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE
+        static var applicationVersion: UInt8          = 0x00  // ESP_ZB_ZCL_BASIC_APPLICATION_VERSION_DEFAULT_VALUE
+        static var stackVersion: UInt8                = 0x00  // ESP_ZB_ZCL_BASIC_STACK_VERSION_DEFAULT_VALUE
+        static var hardwareVersion: UInt8             = 0x00  // ESP_ZB_ZCL_BASIC_HW_VERSION_DEFAULT_VALUE
+        static var powerSource: UInt8                 = 0x00  // ESP_ZB_ZCL_BASIC_POWER_SOURCE_DEFAULT_VALUE
+        static var genericDeviceClass: UInt8          = 0xFF  // ESP_ZB_ZCL_BASIC_GENERIC_DEVICE_CLASS_DEFAULT_VALUE
+        static var genericDeviceType: UInt8           = 0xFF  // ESP_ZB_ZCL_BASIC_GENERIC_DEVICE_TYPE_DEFAULT_VALUE
+        static var physicalEnvironment: UInt8         = 0x00  // ESP_ZB_ZCL_BASIC_PHYSICAL_ENVIRONMENT_DEFAULT_VALUE
+        static var deviceEnabled: Bool                = true  // ESP_ZB_ZCL_BASIC_DEVICE_ENABLED_DEFAULT_VALUE
+        static var alarmMask: UInt8                   = 0x00  // ESP_ZB_ZCL_BASIC_ALARM_MASK_DEFAULT_VALUE
+        static var disableLocalConfig: UInt8          = 0x00  // ESP_ZB_ZCL_BASIC_DISABLE_LOCAL_CONFIG_DEFAULT_VALUE
+        
+        // Pascal-style string: [length, content...]
+        static var swBuildId: [UInt8] = [             // ESP_ZB_ZCL_BASIC_SW_BUILD_ID_DEFAULT_VALUE
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        ]
+        
+        // Empty/default string fields (usually length 0 or 1)
+        static var manufacturerName: [UInt8]          = [0]   // ESP_ZB_ZCL_BASIC_MANUFACTURER_NAME_DEFAULT_VALUE
+        static var modelIdentifier: [UInt8]           = [0]   // ESP_ZB_ZCL_BASIC_MODEL_IDENTIFIER_DEFAULT_VALUE
+        static var dateCode: [UInt8]                  = [0]   // ESP_ZB_ZCL_BASIC_DATE_CODE_DEFAULT_VALUE
+        static var productCode: [UInt8]               = [0]   // ESP_ZB_ZCL_BASIC_PRODUCT_CODE_DEFAULT_VALUE
+        static var productURL: [UInt8]                = [0]   // ESP_ZB_ZCL_BASIC_PRODUCT_URL_DEFAULT_VALUE
+        static var manufacturerVersionDetails: [UInt8] = [0]  // ESP_ZB_ZCL_BASIC_MANUFACTURER_VERSION_DETAILS_DEFAULT_VALUE
+        static var serialNumber: [UInt8]              = [0]   // ESP_ZB_ZCL_BASIC_SERIAL_NUMBER_DEFAULT_VALUE
+        static var productLabel: [UInt8]              = [0]   // ESP_ZB_ZCL_BASIC_PRODUCT_LABEL_DEFAULT_VALUE
+        static var locationDescription: [UInt8]       = [0]   // ESP_ZB_ZCL_BASIC_LOCATION_DESCRIPTION_DEFAULT_VALUE
+        
+        enum Command: UInt8 {
+            case resetToFactoryDefaults = 0x00
+        }     
+        
+    }
+   
+
+    // MARK: - Identify Cluster Attribute IDs
+    enum Identify: UInt16 {
+        case time = 0x0000  // ESP_ZB_ZCL_ATTR_IDENTIFY_IDENTIFY_TIME_ID
+        
+//        var rawCValue: esp_zb_zcl_attr_t {
+//            return esp_zb_zcl_attr_t(self.rawValue)
+//        }
+    }
     
-    // Pascal-style string: [length, content...]
-    static var swBuildId: [UInt8] = [             // ESP_ZB_ZCL_BASIC_SW_BUILD_ID_DEFAULT_VALUE
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    ]
+    // MARK: - Identify Cluster Default Values
+   
+        static let identifyTimeDefaultValue: UInt16 = 0x0000  // ESP_ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE
+   
     
-    // Empty/default string fields (usually length 0 or 1)
-    static var manufacturerName: [UInt8]          = [0]   // ESP_ZB_ZCL_BASIC_MANUFACTURER_NAME_DEFAULT_VALUE
-    static var modelIdentifier: [UInt8]           = [0]   // ESP_ZB_ZCL_BASIC_MODEL_IDENTIFIER_DEFAULT_VALUE
-    static var dateCode: [UInt8]                  = [0]   // ESP_ZB_ZCL_BASIC_DATE_CODE_DEFAULT_VALUE
-    static var productCode: [UInt8]               = [0]   // ESP_ZB_ZCL_BASIC_PRODUCT_CODE_DEFAULT_VALUE
-    static var productURL: [UInt8]                = [0]   // ESP_ZB_ZCL_BASIC_PRODUCT_URL_DEFAULT_VALUE
-    static var manufacturerVersionDetails: [UInt8] = [0]  // ESP_ZB_ZCL_BASIC_MANUFACTURER_VERSION_DETAILS_DEFAULT_VALUE
-    static var serialNumber: [UInt8]              = [0]   // ESP_ZB_ZCL_BASIC_SERIAL_NUMBER_DEFAULT_VALUE
-    static var productLabel: [UInt8]              = [0]   // ESP_ZB_ZCL_BASIC_PRODUCT_LABEL_DEFAULT_VALUE
-    static var locationDescription: [UInt8]       = [0]   // ESP_ZB_ZCL_BASIC_LOCATION_DESCRIPTION_DEFAULT_VALUE
+    // MARK: - Identify Cluster Command IDs
+    enum IdentifyCommand: UInt32 {
+        case id            = 0x00  // ESP_ZB_ZCL_CMD_IDENTIFY_IDENTIFY_ID
+        case QueryId       = 0x01  // ESP_ZB_ZCL_CMD_IDENTIFY_IDENTIFY_QUERY_ID
+        case triggerEffectId       = 0x40  // ESP_ZB_ZCL_CMD_IDENTIFY_TRIGGER_EFFECT_ID
+        
+//        var rawCValue: esp_zb_zcl_cmd_id_t {
+//            return esp_zb_zcl_cmd_id_t(self.rawValue)
+//        }
+    }
+    static let identifyQueryRspId : UInt32   = 0x00 // ESP_ZB_ZCL_CMD_IDENTIFY_IDENTIFY_QUERY_RSP_ID
+    // MARK: - Identify Trigger Effect Values
+    enum IdentifyEffect: UInt8 {
+        case blink          = 0x00  // ESP_ZB_ZCL_IDENTIFY_EFFECT_ID_BLINK
+        case breathe        = 0x01  // ESP_ZB_ZCL_IDENTIFY_EFFECT_ID_BREATHE
+        case okay           = 0x02  // ESP_ZB_ZCL_IDENTIFY_EFFECT_ID_OKAY
+        case channelChange  = 0x0B  // ESP_ZB_ZCL_IDENTIFY_EFFECT_ID_CHANNEL_CHANGE
+        case finishEffect   = 0xFE  // ESP_ZB_ZCL_IDENTIFY_EFFECT_ID_FINISH_EFFECT
+        case stop           = 0xFF  // ESP_ZB_ZCL_IDENTIFY_EFFECT_ID_STOP
+//        var rawCValue: esp_zb_zcl_identify_trigger_effect_t {
+//            return esp_zb_zcl_identify_trigger_effect_t(self.rawValue)
+//        }
+    }
 }
-enum ZCLBasicCommand: UInt8 {
-    case resetToFactoryDefaults = 0x00
-}    
-    
+
 //
 // ** @brief Default value for ZCL version attribute */
 //#define ESP_ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE ((uint8_t)0x08)
