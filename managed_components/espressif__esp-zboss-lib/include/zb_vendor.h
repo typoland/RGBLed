@@ -40,14 +40,10 @@
 #include "sdkconfig.h"
 #include "esp_log.h"
 
-#if CONFIG_ZB_RCP
-#include "zb_vendor_rcp.h"
-#elif CONFIG_ZB_ZCZR || CONFIG_ZB_ZED
+#if CONFIG_ZB_ZCZR || CONFIG_ZB_ZED
 #include "zb_vendor_default.h"
-#endif
-
-#if CONFIG_ZB_RADIO_MACSPLIT_UART
-#include "zb_vendor_host.h"
+#elif CONFIG_ZB_ZGPD
+#include "zb_vendor_zgpd.h"
 #endif
 
 #if CONFIG_ZB_R22_ENABLE
@@ -56,35 +52,42 @@
 #endif
 
 #define ZB_CONFIG_ESP
-/* trace */
-#define ZB_TRACE_LEVEL CONFIG_ZB_TRACE_LEVEL
-#define ZB_TRACE_MASK  CONFIG_ZB_TRACE_MASK
 
 /* use assert in ZBOSS */
 #define USE_ASSERT
 /* Using for ZBOSS assert and change ZBOSS assert logic*/
 #define ESP_ZB_USE_ASSERT
 
+/* ESP Zigbee Trace Log */
 #if defined CONFIG_ESP_ZB_TRACE_ENABLE
-#define ESP_ZIGBEE_TRACE
-#define ESP_ZBOSS_TRACE_VPRINTF_STACK_BUFFER_SIZE 250
-#endif
-
-#ifdef ZB_TRACE_LEVEL
+/* ZBOSS TRACE LOG is controlled by TRACE_ENABLED and TRACE_MSG.
+ * - TRACE_ENABLED determines which logs are compiled into the binary and available for
+ *    printing at runtime.
+ * - TRACE_MSG enables logs to be printed according to the configured ZB_TRACE_LEVEL
+ *    and ZB_TRACE_MASK at runtime.
+ */
+#define TRACE_ENABLED(m) (true)
+#define ZB_BINARY_TRACE
+#define ZB_BINARY_AND_TEXT_TRACE_MODE
 #define ZB_TRACE_TO_PORT
 #define ZB_TRACE_FROM_INTR
-#define ZB_BINARY_TRACE
 #define ZB_TRAFFIC_DUMP_ON
+#define ZB_TRACE_LEVEL CONFIG_ZB_TRACE_LEVEL
+#define ZB_TRACE_MASK  CONFIG_ZB_TRACE_MASK
+
+/* Trace JTAG */
 #ifndef ZB_TRACE_OVER_JTAG
 #define ZB_TRACE_OVER_USART
+#endif  /* ZB_TRACE_OVER_JTAG */
+
+/* Trace USART */
+#if defined ZB_TRACE_OVER_USART
+#define ZB_SERIAL_FOR_TRACE
+#endif /* ZB_TRACE_OVER_USART */
+#endif /* CONFIG_ESP_ZB_TRACE_ENABLE */
+
 #define ZB_HAVE_SERIAL
 #define ZB_HAVE_SERIAL_SINGLE
-#endif  /* not over jtag */
-#endif  /* if trace */
-
-#if defined ZB_TRACE_OVER_USART && defined ZB_TRACE_LEVEL
-#define ZB_SERIAL_FOR_TRACE
-#endif
 
 /* Macsplit SoC does not use prod cfg indeed, but that define is necessary for constants definition */
 #define ZB_PRODUCTION_CONFIG
@@ -97,3 +100,15 @@
 #else
 #define ZB_MAC_QUEUE_SIZE 10U
 #endif
+
+/* The time allotted for adding route information using frame data at the beginning (beacon interval units) */
+#define ZB_NWK_AGGRESSIVE_ROUTE_ADD_TIME 10U
+
+/* Memory configuration */
+#define ZB_CONFIGURABLE_MEM
+
+/* Bind translation */
+#define ZB_BIND_TRANS_PARALLEL
+
+/* Disable Children count feature */
+#define ZB_NO_COUNT_CHILDREN

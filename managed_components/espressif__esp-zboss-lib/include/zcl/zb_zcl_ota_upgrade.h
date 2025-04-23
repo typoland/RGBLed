@@ -129,6 +129,7 @@ enum zb_zcl_ota_upgrade_file_header_fc_e
 
 /** @brief Special Manufacturer Code, see ZCL8 specification, subsection 11.4.2.5 */
 #define ZB_ZCL_OTA_UPGRADE_FILE_HEADER_MANUFACTURE_CODE_WILD_CARD   0xffff
+#define ZB_ZCL_OTA_UPGRADE_FILE_HEADER_FILE_VERSION_WILD_CARD       0xffffffff
 
 /*! @brief OTA File header - Image Type Values
     @see ZCL8 specification, subsection 11.4.2.6, Table 11-4. Image Type Values
@@ -329,9 +330,6 @@ typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_ecdsa_certificate_s
 /** @brief Default value for OTA Upgrade cluster revision global attribute */
 #define ZB_ZCL_OTA_UPGRADE_CLUSTER_REVISION_DEFAULT ((zb_uint16_t)0x0004u)
 
-/*! @brief Maximum size data for Query Image Block Request */
-#define ZB_ZCL_OTA_UPGRADE_QUERY_IMAGE_BLOCK_DATA_SIZE_MAX   64
-
 /*! @brief Callback function for send next data portion
  *
  */
@@ -450,6 +448,18 @@ typedef struct zb_zcl_ota_upgrade_server_variable_s
 
 /*! @brief Default value for UpgradeTime, OTA spec  */
 #define ZB_ZCL_OTA_UPGRADE_UPGRADE_TIME_DEF_VALUE       0xffffffff
+
+/* @brief ota upgrade query image resp app parameters */
+typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_query_img_resp_param_s
+{
+  zb_uint8_t status;              /** Status, see @ref zcl_status */
+  zb_zcl_addr_t server_addr;      /** Server address */
+  zb_uint8_t server_endpoint;     /** Server endpoint */
+  zb_uint16_t manufacturer;       /** Manufacturer code */
+  zb_uint16_t image_type;         /** Image type */
+  zb_uint32_t file_version;       /** File version */
+  zb_uint32_t image_size;         /** Image size */
+} ZB_PACKED_STRUCT zb_zcl_ota_upgrade_query_img_resp_param_t;
 
 typedef ZB_PACKED_PRE struct zb_zcl_ota_upgrade_srv_query_img_param_s
 {

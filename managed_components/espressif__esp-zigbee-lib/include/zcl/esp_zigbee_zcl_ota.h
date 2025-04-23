@@ -30,8 +30,8 @@ typedef enum {
   /* Server variables and Custom data */
   ESP_ZB_ZCL_ATTR_OTA_UPGRADE_SERVER_ENDPOINT_ID            = 0xfff3,             /*!< Brief OTA server endpoint custom attribute */
   ESP_ZB_ZCL_ATTR_OTA_UPGRADE_SERVER_ADDR_ID                = 0xfff2,             /*!< Brief OTA server addr custom attribute */
-  ESP_ZB_ZCL_ATTR_OTA_UPGRADE_CLIENT_PARAMETER_ID           = 0xfff1,             /*!< Brief OTA client parameter attribute */
-  ESP_ZB_ZCL_ATTR_OTA_UPGRADE_SERVER_PARAMETER_ID           = 0xfff0,             /*!< Brief OTA server parameter attribute */
+  ESP_ZB_ZCL_ATTR_OTA_UPGRADE_CLIENT_DATA_ID                = 0xfff1,             /*!< Brief OTA client data attribute, its type can refer to esp_zb_zcl_ota_upgrade_client_variable_t */
+  ESP_ZB_ZCL_ATTR_OTA_UPGRADE_SERVER_DATA_ID                = 0xfff0,             /*!< Brief OTA server data attribute, its type can refer to esp_zb_zcl_ota_upgrade_server_variable_t */
 } esp_zb_zcl_ota_upgrade_attr_t;
 
 /** @brief Default value for UpgradeServerID attribute */
@@ -112,6 +112,20 @@ typedef enum {
   ESP_ZB_ZCL_OTA_UPGRADE_STATUS_BUSY               = 0x0009,                /*!< Another download is in progress, deny new image */
   ESP_ZB_ZCL_OTA_UPGRADE_STATUS_SERVER_NOT_FOUND   = 0x000A                 /*!< Notify an application that OTA Upgrade server not found */
 } esp_zb_zcl_ota_upgrade_status_t;
+
+/** @brief The status of OTA upgrade server */
+typedef enum {
+  ESP_ZB_ZCL_OTA_UPGRADE_SERVER_STARTED   = 0x00,   /*!< Start OTA */
+  ESP_ZB_ZCL_OTA_UPGRADE_SERVER_ABORTED   = 0x01,   /*!< Abort OTA */
+  ESP_ZB_ZCL_OTA_UPGRADE_SERVER_END       = 0x02,   /*!< End OTA */
+} esp_zb_ota_upgrade_server_status_t;
+
+/** @brief OTA File header - fc fields bitmasks */
+typedef enum esp_zb_zcl_ota_upgrade_file_header_fc_e {
+  ESP_ZB_ZCL_OTA_UPGRADE_FILE_HEADER_FC_CREDENTIAL_VER      = 1 << 0, /*!< Indicate that the Security Credential Version field will be included. */
+  ESP_ZB_ZCL_OTA_UPGRADE_FILE_HEADER_FC_DEVICE_SPECIFIC     = 1 << 1, /*!< Indicate that the Device Specific field will be included. */
+  ESP_ZB_ZCL_OTA_UPGRADE_FILE_HEADER_FC_HW_VER              = 1 << 2, /*!< Indicate that the Hardware Versions Present field will be included. */
+} esp_zb_zcl_ota_upgrade_file_header_fc_t;
 
 #ifdef __cplusplus
 }

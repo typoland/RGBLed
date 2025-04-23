@@ -38,9 +38,15 @@ extension RGBColor {
     static var lightWhite = RGBColor(r: 16,  g: 16,  b: 16)
     static var lightRandom: RGBColor {
         RGBColor(
-            r: .random(in: 0...16), 
-            g: .random(in: 0...16), 
-            b: .random(in: 0...16))
+            r: .random(in: 16...32), 
+            g: .random(in: 4...16), 
+            b: .random(in: 0...8))
+    }
+    static var random: RGBColor {
+        RGBColor(
+            r: .random(in: 127...255), 
+            g: .random(in: 8...64), 
+            b: .random(in: 0...32))
     }
 }
 extension ColorValue {

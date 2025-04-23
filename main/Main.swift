@@ -1,6 +1,12 @@
 
 @_cdecl("app_main")
 func app_main() {
+    do {
+        try Zigbee.start()
+    } catch  {
+        print ("Zigbee start Failed")
+    }
+    
     let rgbLedChannels = RGB (
         r: LedChannelAssign(channel: LEDC_CHANNEL_3, gpio: 22),
         g: LedChannelAssign(channel: LEDC_CHANNEL_4, gpio: 2),
@@ -8,7 +14,7 @@ func app_main() {
     )
     let rgbLed = try! RGBLed(channels: rgbLedChannels, timerNumber: LEDC_TIMER_2)
     rgbLed.setColor(r: 30, g: 200, b: 0)
-    
+    /*
     let redLedChannel = LedChannelAssign(channel: LEDC_CHANNEL_1, gpio: 10)    
     let redLed = try! MonchromeLed(channel: redLedChannel)
     redLed.setBrightness(10)
@@ -20,7 +26,7 @@ func app_main() {
     let blueLedChannel = LedChannelAssign(channel: LEDC_CHANNEL_2, gpio: 11)
     let blueLed = try! MonchromeLed(channel: blueLedChannel)
     blueLed.setBrightness(10)
-    
+    */
     var ticks = 0
     var color = rgbLed.color
     print ("r:\(color.r) g:\(color.g) b:\(color.b)")
@@ -39,22 +45,22 @@ func app_main() {
    
     print ("OK")
     let delay: UInt32 = 10
-    let time: Int32 = 500
-    let colors:[RGBColor] = [.red, .lightRandom, .blue,  .lightRandom, .green, .lightRandom, .off, .lightRandom, .white, .lightRandom]
+    //let time: Int32 = 500
+    let colors:[RGBColor] = [.random, .lightRandom]
     while true {
         let index = ticks % colors.count
         color = colors[index]
         rgbLed.fadeToColor(color)
-        redLed.fadeTo(color.r)
-        greenLed.fadeTo(color.g)
-        blueLed.fadeTo(color.b)
+//        redLed.fadeTo(color.r)
+//        greenLed.fadeTo(color.g)
+//        blueLed.fadeTo(color.b)
         vTaskDelay(delay)
         
         ticks += 1
         vTaskDelay(30)
-        print ("go...")
+        print ("go...\(ticks)")
         //print ("\red:\(red), green:\(green), blue:\(blue)")
+        
     }
-  
 }
 

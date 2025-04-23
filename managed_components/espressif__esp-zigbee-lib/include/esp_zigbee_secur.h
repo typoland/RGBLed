@@ -25,6 +25,15 @@ typedef enum {
 /********************* Declare functions **************************/
 
 /**
+ * @brief Enable Trust Center to only use install code policy
+ *
+ * @param[in] enabled A boolean indicating whether only the install code policy is enabled.
+ * @return
+ *      - ESP_OK: on success, otherwise, failed
+ */
+esp_err_t esp_zb_secur_ic_only_enable(bool enabled);
+
+/**
  * @brief   Get the Zigbee install code from storage
  *
  * @warning  Only for the non-Trust Center device (non Zigbee coordinator)!
@@ -111,7 +120,7 @@ esp_err_t esp_zb_secur_ic_remove_req(esp_zb_ieee_addr_t address);
 esp_err_t esp_zb_secur_ic_remove_all_req(void);
 
 /**
- * @brief Set the Trust Center standard distrbuted key
+ * @brief Set the Trust Center standard distributed key
  *
  * @param key A pointer to standard distributed key of Trust Center that will be set to
  */
@@ -134,6 +143,24 @@ void esp_zb_secur_TC_standard_preconfigure_key_set(uint8_t *key);
 void esp_zb_secur_link_key_exchange_required_set(bool enable);
 
 /**
+ * @brief Enable/Disable the network layer security
+ *
+ * @param[in] enabled A boolean indicating whether network layer security will be enabled
+ * @return
+ *      - ESP_OK: On success
+ *      - ESP_ERR_INVALID_STATE: Invalid setting when the device is in network state
+ *      - Otherwise: On failure
+ */
+esp_err_t esp_zb_secur_network_security_enable(bool enabled);
+
+/**
+ * @brief Get the network security enabled state
+ *
+ * @return  Whether the network layer security is enabled or not
+ */
+bool esp_zb_secur_network_security_is_enabled(void);
+
+/**
  * @brief Get the primary security network key
  *
  * @note The network key can only be obtained after the Zigbee device is the joined state.
@@ -154,6 +181,71 @@ esp_err_t esp_zb_secur_primary_network_key_get(uint8_t *key);
  *      - ESP_ERR_INVALID_STATE: invalid network state.
  */
 esp_err_t esp_zb_secur_network_key_set(uint8_t *key);
+
+/**
+ * @brief Switches the network key using the specified Key Sequence Number.
+ *
+ * @param[in] key A 16-byte security network key that will be switched
+ * @param[in] key_seq_num The sequence number of the network key to switch to.
+ * @return
+ *      - ESP_OK: on success
+ *      - ESP_ERR_INVALID_ARG: invalid argument
+ */
+esp_err_t esp_zb_secur_network_key_switch(const uint8_t *key, uint8_t key_seq_num);
+
+/**
+ * @brief Get the minimum LQI values for device joining the network
+ *
+ * @return The minimum LQI values
+ */
+uint8_t esp_zb_secur_network_min_join_lqi_get(void);
+
+/**
+ * @brief Set the minimum LQI value for device joining the network
+ *
+ * @param[in] lqi The LQI values
+ */
+void esp_zb_secur_network_min_join_lqi_set(uint8_t lqi);
+
+/**
+ * @brief Add the specified pre-configured TC standard link key for the device
+ *
+ * @param[in] key A pointer to 16-byte pre-configured link key to be set
+ * @return
+ *      - ESP_OK: Preconfigured TC standard link key added successfully
+ *      - ESP_FAIL: Failed to add preconfigured TC standard link key
+ */
+esp_err_t esp_zb_secur_multi_TC_standard_preconfigure_key_add(uint8_t *key);
+
+/**
+ * @brief Remove the specified pre-configured TC standard link key from the device
+ *
+ * @param[in] key A pointer to 16-byte the pre-configured link key to be removed
+ * @return
+ *      - ESP_OK: Preconfigured TC standard link key removed successfully
+ *      - ESP_FAIL: Failed to remove preconfigured TC standard link key
+ */
+esp_err_t esp_zb_secur_multi_TC_standard_preconfigure_key_remove(uint8_t *key);
+
+/**
+ * @brief Add the specified pre-configured distributed link key for the device
+ *
+ * @param[in] key A pointer to 16-byte pre-configured distributed link key to be set
+ * @return
+ *      - ESP_OK: Preconfigured distributed link key added successfully
+ *      - ESP_FAIL: Failed to add preconfigured distributed link key
+ */
+esp_err_t esp_zb_secur_multi_standard_distributed_key_add(uint8_t *key);
+
+/**
+ * @brief Remove the specified pre-configured distributed link key from the device
+ *
+ * @param[in] key A pointer to 16-byte pre-configured distributed link key to be removed
+ * @return
+ *      - ESP_OK: Preconfigured distributed link key removed successfully
+ *      - ESP_FAIL: Failed to remove preconfigured distributed link key
+ */
+esp_err_t esp_zb_secur_multi_standard_distributed_key_remove(uint8_t *key);
 
 #ifdef __cplusplus
 }

@@ -1,4 +1,3 @@
-
 struct RGBLed: PWMLed {
 
     var timerConfig: LedTimerConfig
@@ -44,7 +43,7 @@ struct RGBLed: PWMLed {
         setDuty(config: channelsConfig.b, duty: b)
     }
     
-    func fadeToColor(_ color: RGBColor, ms time: Int32 = 500) {
+    func fadeToColor(_ color: RGBColor, ms time: Int32 = 1500) {
         channelsConfig.r.fade(to: timerConfig.rawDuty(color.r), ms: time)
         channelsConfig.g.fade(to: timerConfig.rawDuty(color.g), ms: time)
         channelsConfig.b.fade(to: timerConfig.rawDuty(color.b), ms: time)

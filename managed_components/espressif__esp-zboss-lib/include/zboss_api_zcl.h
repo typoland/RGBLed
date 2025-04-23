@@ -47,6 +47,23 @@
 #include "zcl/zb_zcl_common.h"
 #include "zcl/zb_zcl_commands.h"
 
+#if defined (ZB_NO_SINGLE_PRECISION_DATA_TYPE)
+
+/*
+ * The following ZCL clusters use zb_single_t, which is not supported
+ * if ZB_NO_SINGLE_PRECISION_DATA_TYPE is defined.
+ */
+
+// TODO: Analog Input (Basic) also uses zb_single_t
+#undef ZB_ZCL_SUPPORT_CLUSTER_ANALOG_VALUE
+#undef ZB_ZCL_SUPPORT_CLUSTER_MULTISTATE_VALUE
+
+/* All 4.13 Concentration Measurement clusters */
+#undef ZB_ZCL_SUPPORT_CLUSTER_PM2_5_MEASUREMENT
+#undef ZB_ZCL_SUPPORT_CLUSTER_CARBON_DIOXIDE_MEASUREMENT
+
+#endif /* ZB_NO_SINGLE_PRECISION_DATA_TYPE */
+
 #if !(defined ZB_ZCL_DISABLE_REPORTING)
 #include "zcl/zb_zcl_reporting.h"
 #endif
@@ -81,11 +98,26 @@
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_ANALOG_INPUT)
 #include "zcl/zb_zcl_analog_input.h"
 #endif
+#if defined (ZB_ZCL_SUPPORT_CLUSTER_ANALOG_VALUE)
+#include "zcl/zb_zcl_analog_value.h"
+#endif
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_BINARY_INPUT)
 #include "zcl/zb_zcl_binary_input.h"
 #endif
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_MULTISTATE_INPUT)
 #include "zcl/zb_zcl_multistate_input.h"
+#endif
+#if defined (ZB_ZCL_SUPPORT_CLUSTER_MULTISTATE_VALUE)
+#include "zcl/zb_zcl_multistate_value.h"
+#endif
+#if defined (ZB_ZCL_SUPPORT_CLUSTER_CARBON_DIOXIDE_MEASUREMENT)
+#include "zcl/zb_zcl_carbon_dioxide_measurement.h"
+#endif
+#if defined (ZB_ZCL_SUPPORT_CLUSTER_PM2_5_MEASUREMENT)
+#include "zcl/zb_zcl_pm2_5_measurement.h"
+#endif
+#if defined (ZB_ZCL_SUPPORT_CLUSTER_DEVICE_TEMP_CONFIG)
+#include "zcl/zb_zcl_device_temp_config.h"
 #endif
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_LEVEL_CONTROL)
 #ifndef ZB_CVC_FEATURE_SUPPORT
@@ -403,19 +435,19 @@
  *  @brief Get current time in units.
  *  Uint = 1/10 sec
  */
-#define ZB_GET_TIME_IN_UNITS()    ZB_BEACON_INTERVAL_TO_TIME_UNITS(ZB_TIMER_GET())
+#define ZB_GET_TIME_IN_UNITS()    ZB_SYS_TIMER_INTERVAL_TO_TIME_UNITS(ZB_TIMER_GET())
 
 /**
- *  @brief Convert beacon interval to units
+ *  @brief Convert system timer interval to units
  *  Uint = 1/10 sec
  */
-#define ZB_BEACON_INTERVAL_TO_TIME_UNITS(beacons)    ZB_TIME_BEACON_INTERVAL_TO_MSEC(beacons) / 100U
+#define ZB_SYS_TIMER_INTERVAL_TO_TIME_UNITS(interval)    ZB_SYS_TIMER_INTERVAL_TO_MSEC(interval) / 100U
 
 /**
- *  @brief Convert units to beacon interval.
+ *  @brief Convert units to system timer interval.
  *  Uint = 1/10 sec
  */
-#define ZB_TIME_UNITS_TO_BEACON_INTERVAL(uints)  ZB_MILLISECONDS_TO_BEACON_INTERVAL((uints)*100U)
+#define ZB_TIME_UNITS_TO_SYS_TIMER_INTERVAL(uints)  ZB_MILLISECONDS_TO_SYS_TIMER_INTERVAL((uints)*100U)
 /** @endcond */ /* internals_doc */
 
 /**
@@ -659,8 +691,12 @@ typedef enum zb_zcl_device_callback_id_e
   ZB_ZCL_IAS_ACE_GET_ZONE_STATUS_RESP_CB_ID,
   /** Inform user about OTA Upgrade commands  */
   ZB_ZCL_OTA_UPGRADE_VALUE_CB_ID,
+  /** Inform user about OTA Upgrade query image response command */
+  ZB_ZCL_OTA_UPGRADE_QUERY_IMAGE_RESP_CB_ID,
   /** Inform user about Basic Reset to Factory Defaults commands  */
   ZB_ZCL_BASIC_RESET_CB_ID,
+  /** Inform user about call Thermostat weekly schedule command @see HA spec 10.1.3.3 */
+  ZB_ZCL_THERMOSTAT_WEEKLY_SCHEDULE_SET_CB_ID,
   /** Inform user about call Thermostat command @see HA spec 10.1.3.3 */
   ZB_ZCL_THERMOSTAT_VALUE_CB_ID,
   /** Inform user about Check-In command from polled device */
@@ -1464,6 +1500,19 @@ typedef enum zb_zcl_device_callback_id_e
    *
    */
   ZB_ZCL_WINDOW_COVERING_STOP_CB_ID,
+
+  /** @b Server. Inform user about Window Covering Go to Lift Value command.
+   *
+   * User's application callback is initialized by RET_OK status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_go_to_lift_value_req_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors.
+   *
+   */
+  ZB_ZCL_WINDOW_COVERING_GO_TO_LIFT_VALUE_CB_ID,
   /** @b Server. Inform user about Window Covering Go to Lift Percentage command.
    *
    * User's application callback is initialized by RET_OK status of device
@@ -1476,6 +1525,18 @@ typedef enum zb_zcl_device_callback_id_e
    *
    */
   ZB_ZCL_WINDOW_COVERING_GO_TO_LIFT_PERCENTAGE_CB_ID,
+  /** @b Server. Inform user about Window Covering Go to Tilt Value command.
+   *
+   * User's application callback is initialized by RET_OK status of device
+   * callback parameters.
+   * @param[in] param_in @ref zb_zcl_go_to_tilt_value_req_t
+   *
+   * One of the following statuses must be returned:
+   * @return RET_OK - successfully handle command. Default Response will be send if requested.
+   * @return RET_ERROR - command is handled with errors.
+   *
+   */
+  ZB_ZCL_WINDOW_COVERING_GO_TO_TILT_VALUE_CB_ID,
   /** @b Server. Inform user about Window Covering Go to Tilt Percentage command.
    *
    * User's application callback is initialized by RET_OK status of device
@@ -1888,6 +1949,7 @@ typedef struct zb_zcl_device_callback_param_s
     /* moved thermostat_value_param out of ZB_ENABLE_HA to be able to compile without that define */
 #if defined ZB_ZCL_SUPPORT_CLUSTER_THERMOSTAT
    zb_zcl_thermostat_value_param_t thermostat_value_param;
+   zb_zcl_thermostat_weekly_schedule_table_param_t thermostat_weekly_schedule_table_param;
 #endif
 #if defined (ZB_ZCL_SUPPORT_CLUSTER_IAS_WD)
    zb_zcl_ias_wd_squawk_value_param_t  squawk_value_param;
@@ -1912,6 +1974,9 @@ typedef struct zb_zcl_device_callback_param_s
    zb_zcl_ota_upgrade_srv_upgrade_aborted_param_t ota_upgrade_srv_upgrade_aborted_param;
    zb_zcl_ota_upgrade_srv_upgrade_end_param_t     ota_upgrade_srv_upgrade_end_param;
 #endif
+#if defined ZB_HA_ENABLE_OTA_UPGRADE_CLIENT
+   zb_zcl_ota_upgrade_query_img_resp_param_t  ota_upgrade_query_img_resp_param;
+#endif
 #endif /* defined ZB_ENABLE_HA */
     zb_zcl_device_cmd_generic_param_t gnr;
   }
@@ -1933,13 +1998,16 @@ typedef struct zb_zcl_device_callback_param_s
   ((ZB_ZCL_DEVICE_CMD_PARAM(_param))->cb_param.gnr.out = _pvalue)
 
 /** Init all fields of device callback params. */
-#define ZB_ZCL_DEVICE_CMD_PARAM_INIT_WITH(_param, _cb_id, _status, _cmd_info, _in, _out) \
-  (ZB_BZERO(ZB_ZCL_DEVICE_CMD_PARAM(_param), sizeof(*ZB_ZCL_DEVICE_CMD_PARAM(_param))), \
-   (ZB_ZCL_DEVICE_CMD_PARAM_CB_ID(_param) = _cb_id, \
-    (ZB_ZCL_DEVICE_CMD_PARAM_STATUS(_param) = _status, \
-     (ZB_ZCL_DEVICE_CMD_PARAM_CMD_INFO(_param) = _cmd_info, \
-      (ZB_ZCL_DEVICE_CMD_PARAM_IN_SET(_param, _in), \
-       (ZB_ZCL_DEVICE_CMD_PARAM_OUT_SET(_param, _out)))))))
+#define ZB_ZCL_DEVICE_CMD_PARAM_INIT_WITH(_param, _cb_id, _status, _cmd_info, _in, _out)                              \
+  (ZB_BZERO(ZB_ZCL_DEVICE_CMD_PARAM(_param), sizeof(*ZB_ZCL_DEVICE_CMD_PARAM(_param))),                               \
+    (ZB_ZCL_DEVICE_CMD_PARAM_CB_ID(_param) = _cb_id,                                                                  \
+      (ZB_ZCL_DEVICE_CMD_PARAM_ENDPOINT(_param) = (_cmd_info != NULL ?                                                \
+       ZB_ZCL_PARSED_HDR_SHORT_DATA((typeof(ZB_ZCL_DEVICE_CMD_PARAM_CMD_INFO(_param)))_cmd_info).dst_endpoint : 0x00),\
+        (ZB_ZCL_DEVICE_CMD_PARAM_STATUS(_param) = _status,                                                            \
+         (ZB_ZCL_DEVICE_CMD_PARAM_CMD_INFO(_param) = _cmd_info,                                                       \
+          (ZB_ZCL_DEVICE_CMD_PARAM_IN_SET(_param, _in),                                                               \
+           (ZB_ZCL_DEVICE_CMD_PARAM_OUT_SET(_param, _out))))))))
+
 /** @endcond */ /* internals_doc */
 
 /** Get INPUT device callback parameter from buffer reference.
@@ -1978,6 +2046,10 @@ typedef struct zb_zcl_device_callback_param_s
  */
 #define ZB_ZCL_DEVICE_CMD_PARAM_STATUS(_param) \
   ((ZB_ZCL_DEVICE_CMD_PARAM(_param))->status)
+
+/* Set ENDPOINT device callback parameter with specific value. */
+#define ZB_ZCL_DEVICE_CMD_PARAM_ENDPOINT(_param) \
+     ((ZB_ZCL_DEVICE_CMD_PARAM(_param))->endpoint)
 
 /** @cond internals_doc */
 /** @brief ZCL default handler.
@@ -2135,6 +2207,17 @@ typedef enum zb_bdb_commissioning_mode_mask_e
    @snippet linky_sample/erl_gw/erl_gw.c bdb_start_top_level_commissioning_snippet
   */
 zb_bool_t bdb_start_top_level_commissioning(zb_uint8_t mode_mask);
+
+/**
+ * @brief Cannel touchlink target prodedure
+ *
+ * @return
+ *    - RET_OK: On success
+ *    - RET_ERROR: Not in touchlink target prodedure
+ */
+#ifdef ZB_BDB_TOUCHLINK
+zb_ret_t bdb_cancel_touchlink_target(void);
+#endif /* ZB_BDB_TOUCHLINK */
 
 /**
    @brief Cancel Steering procedure for a node not on a network started with
@@ -2432,7 +2515,11 @@ typedef struct zcl_cluster_handlers_s
 
 #define ZB_ZCL_GENERAL_GET_CMD_LISTS_PARAM 0xFFU
 
-#define ZB_ZCL_CLUSTER_HANDLERS_TABLE_SIZE 20
+#define ZB_ZCL_GATEWAY_EP_SIZE 5
+
+#define ZB_ZCL_ACCEPTABLE_EP_INVALID_VALUE 0x00
+
+#define ZB_ZCL_CLUSTER_HANDLERS_TABLE_SIZE 30
 
 /* See ZCL8 spec, Table 2-10 Nomenclature for Data Value Range and Default */
 /** ZCL8 non-value for int32 type, see subclause 2.6.2.8 */
@@ -2441,6 +2528,17 @@ typedef struct zcl_cluster_handlers_s
 #define ZB_ZCL_NON_VALUE_INT16 ((zb_int16_t)0x8000)
 /** ZCL8 non-value for int8 type, see subclause 2.6.2.8 */
 #define ZB_ZCL_NON_VALUE_INT8 ((zb_int8_t)0x80)
+/** ZCL8 non-value for int24 type, see subclause 2.6.2.8 */
+#define ZB_ZCL_NON_VALUE_INT24  ((zb_int24_t)  { .low = 0x0000U, .high = 0x80U })
+
+/** ZCL8 non-value for uint8 type, see subclause 2.6.2.7 */
+#define ZB_ZCL_NON_VALUE_UINT8  ((zb_uint8_t)0xff)
+/** ZCL8 non-value for uint16 type, see subclause 2.6.2.7 */
+#define ZB_ZCL_NON_VALUE_UINT16 ((zb_uint16_t)0xffff)
+/** ZCL8 non-value for uint32 type, see subclause 2.6.2.7 */
+#define ZB_ZCL_NON_VALUE_UINT32 ((zb_uint32_t)0xffffffff)
+/** ZCL8 non-value for uint24 type, see subclause 2.6.2.7 */
+#define ZB_ZCL_NON_VALUE_UINT24 ((zb_uint24_t) { .low = 0xffffU, .high = 0xffU })
 
 typedef struct zb_discover_cmd_list
 {
@@ -2561,6 +2659,9 @@ typedef struct zb_zcl_globals_s
 
   /** User callback to notify an application a broadcast EP command received */
   zb_device_handler_t broadcast_ep_cb;
+
+  /** Allow these endpoints without cluster */
+  zb_uint8_t gateway_ep[ZB_ZCL_GATEWAY_EP_SIZE];
 } zb_zcl_globals_t;
 
 #define ZCL_SELECTOR() ZG->zcl.selector
@@ -2640,5 +2741,9 @@ void zb_zcl_set_cluster_encryption(zb_uint8_t endpoint_id, zb_uint16_t cluster_i
    @return - Converted status.
 */
 zb_zcl_status_t zb_zcl_zcl8_statuses_conversion(zb_zcl_status_t status);
+
+/* Gateway endpoints configuration */
+zb_ret_t zb_zcl_add_gateway_endpoint(zb_uint8_t endpoint);
+zb_ret_t zb_zcl_remove_gateway_endpoint(zb_uint8_t endpoint);
 
 #endif /* ZBOSS_API_ZCL_H */

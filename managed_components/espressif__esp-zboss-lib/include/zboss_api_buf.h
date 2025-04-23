@@ -81,7 +81,11 @@ typedef ZB_PACKED_PRE struct zb_buf_hdr_s
                                      */
   zb_bitfield_t has_aps_user_payload:1;   /*!< if 1, than packet comes with APS user's payload */
 
-  zb_bitfield_t tail_len:7;    /*!< the length of the perameters section  */
+  zb_bitfield_t tail_len:7;    /*!< the length of the parameters section  */
+
+  zb_uint16_t  layer;          /*!< indicate which layer header has been included in buffer. currently, only the APS layer is flagged */
+
+  zb_uint8_t reserve[2];       /*!< Reserve */
 } ZB_PACKED_STRUCT zb_buf_hdr_t;
 
 /* if there is a platform with failed assertion, ZB_RESERVED_BUF_TO_ALIGN_HDR_SIZE
@@ -196,11 +200,15 @@ typedef zb_uint8_t zb_bufid_t;
 #define TRACE_PROTO TRACE_PROTO_VOID ,
 #define TRACE_CALL_VOID  ZB_TRACE_FILE_ID, __LINE__
 #define TRACE_CALL  TRACE_CALL_VOID ,
+#define TRACE_FORWARD_VOID  from_file, from_line
+#define TRACE_FORWARD  TRACE_FORWARD_VOID ,
 #else
 #define TRACE_PROTO_VOID void
 #define TRACE_PROTO
 #define TRACE_CALL_VOID
 #define TRACE_CALL
+#define TRACE_FORWARD_VOID
+#define TRACE_FORWARD
 #endif  /* ZB_DEBUG_BUFFERS */
 
 #ifdef ZB_DEBUG_BUFFERS_EXT
@@ -313,7 +321,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  * Depending on the specific value, the buffer pool may decide to use a fraction
  * of buffer or long buffers. If the value is set to 0, the payload size will be equal
  * to the size of a single default buffer.
- * @return RET_OK or error code.
+ * @return RET_OK if allocation has successfully scheduled.
+ *         RET_ERROR if there is no room to schedule buffer allocation.
+ *         RET_OUT_OF_RANGE if buffer with such payload size can't be allocated.
  */
 #ifndef zb_buf_get_out_delayed_ext
 #define zb_buf_get_out_delayed_ext(callback,arg,max_size) zb_buf_get_out_delayed_ext_func(TRACE_CALL (callback),(arg),(max_size))
@@ -333,7 +343,9 @@ void *zb_buf_alloc_left_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t size);
  * Depending on the specific value, the buffer pool may decide to use a fraction
  * of buffer or long buffers. If the value is set to 0, the payload size will be equal
  * to the size of a single default buffer.
- * @return RET_OK or error code.
+ * @return RET_OK if allocation has successfully scheduled.
+ *         RET_ERROR if there is no room to schedule buffer allocation.
+ *         RET_OUT_OF_RANGE if buffer with such payload size can't be allocated.
  */
 #ifndef zb_buf_get_in_delayed_ext
 #define zb_buf_get_in_delayed_ext(callback,arg,max_size) zb_buf_get_in_delayed_ext_func(TRACE_CALL (callback),(arg),(max_size))
@@ -652,6 +664,51 @@ void zb_buf_set_mac_rx_need(zb_bool_t needs);
 zb_bool_t zb_buf_get_mac_rx_need(void);
 
 zb_bool_t zb_buf_have_rx_bufs(void);
+
+/**
+ * @name Buffer's layer header bitmask
+ */
+/** @{ */
+#define ZB_BUF_LAYER_NONE   (0U)       /*!< Buffer without any Zigbee headers */
+#define ZB_BUF_LAYER_PHY    (1U << 0)  /*!< Buffer contains PHY header */
+#define ZB_BUF_LAYER_MAC    (1U << 1)  /*!< Buffer contains MAC header */
+#define ZB_BUF_LAYER_NWK    (1U << 2)  /*!< Buffer contains NWK header */
+#define ZB_BUF_LAYER_APS    (1U << 3)  /*!< Buffer contains APS header */
+#define ZB_BUF_LAYER_ZCL    (1U << 4)  /*!< Buffer contains ZCL header */
+#define ZB_BUF_LAYER_ZLL    (1U << 5)  /*!< Buffer contains ZLL header */
+#define ZB_BUF_LAYER_ZGP    (1U << 6)  /*!< Buffer contains ZGP header */
+#define ZB_BUF_LAYER_APP    (1U << 7)  /*!< Buffer contains APP header */
+/** @} */
+
+/** @cond internals_doc */
+zb_uint_t zb_buf_layer_get_func(TRACE_PROTO zb_bufid_t buf);
+void zb_buf_layer_or_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t mask);
+void zb_buf_layer_clr_func(TRACE_PROTO zb_bufid_t buf, zb_uint_t mask);
+/** @endcond */
+
+/**
+   Get 'layer' field of the buffer's header
+
+   @param buf - buffer ID
+   @return layer field value
+ */
+#define zb_buf_layer_get(buf) zb_buf_layer_get_func(TRACE_CALL (buf))
+
+/**
+   Or mask to 'layer' field of the buffer's header
+
+   @param buf - buffer ID
+   @param mask - value will be add to the 'layer' field
+ */
+#define zb_buf_layer_or(buf,mask) zb_buf_layer_or_func(TRACE_CALL (buf), (mask))
+
+/**
+   Clear mask from 'layer' field of the buffer's header
+
+   @param buf - buffer ID
+   @param mask - value will be clear from the 'layer' field
+ */
+#define zb_buf_layer_clr(buf,mask) zb_buf_layer_clr_func(TRACE_CALL (buf), (mask))
 
 #define ZB_BUF_COPY_FLAG_APS_PAYLOAD(dst, src)                          \
   do {                                                                  \

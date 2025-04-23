@@ -8,7 +8,32 @@
 #include <nvs_flash.h>
 #include <driver/ledc.h>
 #include <driver/gpio.h>
-#include  <math.h>
+
+//#include <device.h>
+
+
+/* Zigbee */
+//#include <esp_zigbee_ha_standard.h>
+#include <esp_zigbee_core.h>
+#include <esp_system.h>
+#include <esp_log.h>
+#include <esp_timer.h>
+#include <esp_adc/adc_oneshot.h>
+#include <esp_adc/adc_continuous.h>
+#include <esp_pm.h>
+//#include <esp_zigbee_console.h>
+//#include <esp_zigbee_all_device_types_app.h>
+//void app_nvs_init(void);
+
+//#include <bdb/esp_zigbee_bdb_commissioning.h>
+//#include <esp_zigbee_zdo_command.h>
+//#include <esp_zigbee_bdb.h>
+//include <mqtt_client.h>
+//#include <esp_zb_light.h>
+//#include <zcl_utility.h> //WTF?
+
+
+
 //#include <device.h>
 /*
 #include "freertos/FreeRTOS.h"

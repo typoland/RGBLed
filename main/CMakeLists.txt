@@ -62,20 +62,18 @@ enable_language(Swift)
 file(GLOB_RECURSE SWIFT_SOURCES
     "${CMAKE_CURRENT_LIST_DIR}/Sources/*.swift"
 )
+file(GLOB_RECURSE C_SOURCES
+    "${CMAKE_CURRENT_LIST_DIR}/Sources/*.c"
+)
 
 
 target_sources(${COMPONENT_LIB}
     PRIVATE
     Main.swift
+    #zb_nvram.c
     ${SWIFT_SOURCES}
-#    LedStrip.swift
-#    Timer.swift
-#    ADConverter.swift
-#    RGBLed.swift
-#    GPIOHandler.swift
-#    GPIOOutput.swift
-#    RGBColor.swift
-#    ESPHelpers.swift
+    #zb_config_helper.c
+    #${C_SOURCES}
 )
 
 add_custom_command(
