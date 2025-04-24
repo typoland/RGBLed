@@ -21,6 +21,7 @@ enum ZigbeeError:Swift.Error {
 
 @_cdecl("esp_zb_app_signal_handler")
 public func signalHandler(_ signal: UnsafeMutablePointer<esp_zb_app_signal_t>?) {
+    print ("signal handler \(signal == nil ? "❌" : "✅")")
     guard let signal = signal else { return }
     
     let p_sg_p = signal.pointee.p_app_signal
@@ -74,9 +75,8 @@ var actionHandler @convention(c) (esp_zb_core_action_callback_id_t,
 }
 */
 @_cdecl("esp_zb_task")
-
 func zigbeeTask(_ parameter: UnsafeMutableRawPointer?) {  //(_ parameters: UnsafeMutablePointer<esp_zb_task_param_t>?) {
-    
+    print ("start Zigbee Task")
     var config = ZigbeeConfig(role: .router,
                               installCodePolicy: false,
                               maxChildren: 10)
@@ -85,55 +85,13 @@ func zigbeeTask(_ parameter: UnsafeMutableRawPointer?) {  //(_ parameters: Unsaf
                                               identifier: "OjTamOjTam")
     else {fatalError("cannot create Light")}
   
+    print ("Light config: \(light.config)")
     
     
     
-    
-    
+    print ("...go to main loop")
     esp_zb_stack_main_loop()
 }
 
 
-func addBasicManufacturerInfo(
-    to epList: UnsafeMutablePointer<esp_zb_ep_list_t>,
-    endpointId: UInt8,
-    info: UnsafePointer<zcl_basic_manufacturer_info_t>
-) throws (ZigbeeError) {
 
-    guard let clusterList = esp_zb_ep_list_get_ep(epList, endpointId) else {
-        throw .manufacturerInfoFailed("ZCL_UTILITY: Failed to find endpoint id: \(endpointId) in list: \(epList)")
-    }
-    
-    guard let basicCluster = esp_zb_cluster_list_get_cluster(
-        clusterList,
-        ZCL.Cluster.Id.basic.rawValue, //ESP_ZB_ZCL_CLUSTER_ID_BASIC,
-        ZCL.Cluster.Role.server.rawValue //ESP_ZB_ZCL_CLUSTER_SERVER_ROLE
-    ) else {
-        throw .manufacturerInfoFailed("ZCL_UTILITY: Failed to find basic cluster in endpoint: \(endpointId)")
-    }
-    
-    guard let name = info.pointee.manufacturer_name else {
-        throw .manufacturerInfoFailed("ZCL_UTILITY: Invalid manufacturer name")
-    }
-    
-    switch runEsp({
-        esp_zb_basic_cluster_add_attr(basicCluster, 
-                                      ZCL.BasicAttr.manufacturerName.rawValue, 
-                                      name)}) 
-    {
-    case .success: break
-    case .failure(let err): throw .manufacturerInfoFailed(err)
-    }
-    
-    guard let model = info.pointee.model_identifier else {
-        throw .manufacturerInfoFailed("ZCL_UTILITY: Invalid model identifier")
-    }
-    switch runEsp({
-        esp_zb_basic_cluster_add_attr(basicCluster, 
-                                      ZCL.BasicAttr.modelIdentifier.rawValue, 
-                                      model)})
-    {
-    case .success: break
-    case .failure(let err): throw .manufacturerInfoFailed(err)
-    }
-}

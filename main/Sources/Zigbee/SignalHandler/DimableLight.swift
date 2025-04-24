@@ -4,28 +4,6 @@
 //
 //  Created by Łukasz Dziedzic on 23/04/2025.
 //
-typealias ColorDimmableLightConfig = esp_zb_color_dimmable_light_cfg_t
-
-extension ColorDimmableLightConfig {
-    
-    init (basicConfig:  BasicClusterConfig = .dimmableLight,
-          identifyConfig: IdentifyClusterConfig = .dimmableLight,
-          groupsConfig:   GroupsClusterConfig = .init(),
-          scenesConfig:   ScenesConfig = .init(),
-          onOffConfig:   OnOffClusterConfig = .init(),
-          levelConfig:    LevelClusterConfig = .init(),
-          colorConfig:    ColorClusterConfig = .init()
-    ) {
-        self.init()
-        basic_cfg = basicConfig
-        identify_cfg = identifyConfig
-        groups_cfg = groupsConfig
-        scenes_cfg = scenesConfig
-        on_off_cfg = onOffConfig
-        level_cfg = levelConfig
-        color_cfg = colorConfig
-    }
-}
 
 class ColorDimmableLight {
     enum Error: Swift.Error {
@@ -44,6 +22,7 @@ class ColorDimmableLight {
          identifier: String = "experiment",
          lightConfig: ColorDimmableLightConfig? = nil) throws (Error)
     {
+        print ("Init Dimmable color Light...")
         var config = lightConfig ?? ColorDimmableLightConfig()
         guard let list = Self.colorDimmableLightEndPointCreate(
             Self.endpoint, 
@@ -56,9 +35,14 @@ class ColorDimmableLight {
             name: name,
             identifier: identifier
         )
-        do { try addBasicManufacturerInfo(to: endPointListP, 
-                                         endpointId: Self.endpoint, 
-                                         info: &manufacturerInfo)
+        do {
+            try manufacturerInfo.add(to: endPointListP,
+                                  endpointId: Self.endpoint)
+       
+        
+//        do { try addBasicManufacturerInfo(to: endPointListP, 
+//                                         endpointId: Self.endpoint, 
+//                                         info: &manufacturerInfo)
         } catch (let error) { throw .zigbee(error.description) }
         
         switch runEsp({esp_zb_device_register(endPointListP)}) {
@@ -66,7 +50,7 @@ class ColorDimmableLight {
         case .failure(let err): throw .deviceRegisterFailed(err)
         }
         esp_zb_core_action_handler_register(actionHandler)
-        
+        print("done")
     }
     
     @_silgen_name("esp_zb_color_dimmable_light_ep_create")
@@ -77,6 +61,7 @@ class ColorDimmableLight {
     
     var actionHandler: @convention(c) (esp_zb_core_action_callback_id_t, UnsafeRawPointer?) 
     -> esp_err_t = { actionID, messagePtr in
+        print ("Action Handler ready!")
         return ESP_OK
     }
 }
