@@ -1,8 +1,7 @@
 # Register the app as an IDF component
 idf_component_register(
     SRCS /dev/null # We don't have any C++ sources
-    PRIV_INCLUDE_DIRS "."
-    "/Users/lukasz/esp/esp-zigbee-sdk/examples/common/zcl_utility/include"
+    PRIV_INCLUDE_DIRS "."    
 )
 
 idf_build_get_property(target IDF_TARGET)
