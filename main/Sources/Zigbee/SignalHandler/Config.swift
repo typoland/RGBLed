@@ -74,7 +74,7 @@ extension BasicClusterConfig {
 //MARK:  IDENTIFY CLUSTER CONFIG 
 typealias IdentifyClusterConfig = esp_zb_identify_cluster_cfg_t
 extension IdentifyClusterConfig {
-    init () {
+    init (identifyTime: UInt16 = ZCL.identifyTimeDefaultValue) {
         self.init()
         identify_time = ZCL.identifyTimeDefaultValue //UInt16(ESP_ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE) 
     }

@@ -27,9 +27,9 @@ func app_main() {
     let blueLed = try! MonchromeLed(channel: blueLedChannel)
     blueLed.setBrightness(10)
     */
-    var ticks = 0
-    var color = rgbLed.color
-    print ("r:\(color.r) g:\(color.g) b:\(color.b)")
+//    var ticks = 0
+//    var color = rgbLed.color
+//    print ("r:\(color.r) g:\(color.g) b:\(color.b)")
     
 //    var rFadeParams = FadeParameters.pulse(steps: 100, up: 100, down: 10)
 //    var gFadeParams = FadeParameters.pulse(steps: 100, up: 60, down: 50)
@@ -44,6 +44,7 @@ func app_main() {
     }
    
     print ("OK")
+    /*
     let delay: UInt32 = 10
     //let time: Int32 = 500
     let colors:[RGBColor] = [.random, .lightRandom]
@@ -62,5 +63,6 @@ func app_main() {
         //print ("\red:\(red), green:\(green), blue:\(blue)")
         
     }
+     */
 }
 
