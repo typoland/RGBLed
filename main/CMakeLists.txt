@@ -1,8 +1,11 @@
 # Register the app as an IDF component
 idf_component_register(
     SRCS /dev/null # We don't have any C++ sources
-    PRIV_INCLUDE_DIRS "."    
+    PRIV_INCLUDE_DIRS "." 
+    "../components/zcl_utility/src"
+    "../components/zcl_utility/include"   
 )
+
 
 idf_build_get_property(target IDF_TARGET)
 idf_build_get_property(arch IDF_TARGET_ARCH)
