@@ -31,3 +31,10 @@ enum HostConnectionMode: UInt32 {
         esp_zb_host_connection_mode_t(self.rawValue) 
     }
 }
+
+enum ComissionigMode: UInt8 {
+    case initialization   = 0
+    case networkSteering  = 2
+    case networkFormation = 4
+    
+}
