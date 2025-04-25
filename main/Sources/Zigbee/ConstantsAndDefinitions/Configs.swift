@@ -18,17 +18,11 @@ extension ZigbeeConfig {
         self.init(
             esp_zb_role: role.rawCValue,
             install_code_policy: installCodePolicy,
-            nwk_cfg : .init()
+            nwk_cfg : .init(zczr_cfg: .init(max_children: maxChildren))
         )
         print ("\(#function) base inited")
-//        esp_zb_role = role.rawCValue
-//        install_code_policy = installCodePolicy //INSTALLCODE_POLICY_ENABLE
-//        nwk_cfg = .init() 
-        
-        self.nwk_cfg.zczr_cfg = .init(max_children: maxChildren)
         self.nwk_cfg.zed_cfg  = .init(ed_timeout: timeOut, 
                                       keep_alive: keepAlive)
-        
         print ("\(#function) done")
     }
 }
@@ -47,12 +41,12 @@ typealias HostConfig =  esp_zb_host_config_t
 extension HostConfig {
     init (mode: HostConnectionMode = .none) 
     {
-        self.init()
-        host_connection_mode = mode.rawCValue
-        host_uart_config = .init()
+        self.init(
+            host_connection_mode: mode.rawCValue,
+            host_uart_config    : .init()
+        )
     }
 }
-
 
 //MARK: PLATFORM CONFIG
 typealias PlatformConfig = esp_zb_platform_config_t
@@ -60,9 +54,9 @@ extension PlatformConfig {
     init(radio: RadioConfig = .init(mode: .native), 
          host: HostConfig   = .init()) 
     {
-        self.init()
-        radio_config = radio
-        host_config  =  host
+        self.init( radio_config : radio,
+                   host_config  : host
+        )
     }
 }
 

@@ -1,16 +1,15 @@
 
 @_cdecl("app_main")
 func app_main() {
-    do { try Zigbee.start()
-    } catch  { print ("Zigbee start Failed")}
+    do { try start() } catch  { print ("❌ \(error.description)")}
     
-    let rgbLedChannels = RGB (
-        r: LedChannelAssign(channel: LEDC_CHANNEL_3, gpio: 22),
-        g: LedChannelAssign(channel: LEDC_CHANNEL_4, gpio: 2),
-        b: LedChannelAssign(channel: LEDC_CHANNEL_5, gpio: 3)
-    )
-    let rgbLed = try! RGBLed(channels: rgbLedChannels, timerNumber: LEDC_TIMER_2)
-    rgbLed.setColor(r: 80, g: 20, b: 5)
+//    let rgbLedChannels = RGB (
+//        r: LedChannelAssign(channel: LEDC_CHANNEL_3, gpio: 22),
+//        g: LedChannelAssign(channel: LEDC_CHANNEL_4, gpio: 2),
+//        b: LedChannelAssign(channel: LEDC_CHANNEL_5, gpio: 3)
+//    )
+//    let rgbLed = try! RGBLed(channels: rgbLedChannels, timerNumber: LEDC_TIMER_2)
+//    rgbLed.setColor(r: 80, g: 20, b: 5)
     /*
     let redLedChannel = LedChannelAssign(channel: LEDC_CHANNEL_1, gpio: 10)    
     let redLed = try! MonchromeLed(channel: redLedChannel)

@@ -26,10 +26,18 @@ extension ColorDimmableLightConfig {
         )
     }
 }
-
+extension ZigbeeConfig {
+    static var dimmableLight: ZigbeeConfig {
+        .init(
+            esp_zb_role: DeviceType.router.rawCValue,
+            install_code_policy: false,
+            nwk_cfg : .init(zczr_cfg: .init(max_children: 10))
+        )
+    }
+}
 extension BasicClusterConfig {
     static var dimmableLight: BasicClusterConfig {
-        .init(zcl_version: ZCL.Basic.zclVersion,
+        .init(zcl_version : ZCL.Basic.zclVersion,
               power_source: ZCL.Basic.powerSource)
     }
 }
@@ -45,7 +53,7 @@ extension GroupsClusterConfig {
 }
 extension ScenesConfig {
     static var dimmableLight: ScenesConfig {
-        .init( scenes_count: 0,  
+        .init( scenes_count:  0,  
                current_scene: 0,
                current_group: 0, 
                scene_valid:   false,  
@@ -75,3 +83,25 @@ extension ColorClusterConfig {
     }
 }
 
+extension PlatformConfig {
+    static var dimmableLight: PlatformConfig {
+        .init(radio_config: .dimmableLight,
+              host_config : .dimmableLight) 
+    }
+}
+
+extension RadioConfig {
+    static var dimmableLight: RadioConfig {
+        .init(radio_mode: RadioMode.native.rawCValue,
+              radio_uart_config: .init())
+    }
+}
+
+extension HostConfig {
+    static var dimmableLight: HostConfig  {
+       .init(
+            host_connection_mode: HostConnectionMode.none.rawCValue,
+            host_uart_config    : .init()
+        )
+    }
+}

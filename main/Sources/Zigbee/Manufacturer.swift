@@ -1,6 +1,12 @@
 
 //MARK: MANUFACTURER INFO 
 typealias Manufacturer = zcl_basic_manufacturer_info_t
+
+struct ManufactureData {
+    static var name = "ESPRESSIF"
+    static var modelId = "esp32h2"
+}
+
 extension Manufacturer {
     init(name: String = ManufactureData.name, 
          identifier: String = ManufactureData.modelId) {
