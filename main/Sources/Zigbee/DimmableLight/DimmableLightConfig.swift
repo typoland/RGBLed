@@ -5,6 +5,16 @@
 //  Created by Łukasz Dziedzic on 25/04/2025.
 //
 
+extension ZigbeeConfig {
+    static var dimmableLight: ZigbeeConfig {
+        .init(
+            esp_zb_role        : DeviceType.router.rawCValue,
+            install_code_policy: false,
+            nwk_cfg            : .init(zczr_cfg: .init(max_children: 10))
+        )
+    }
+}
+
 typealias ColorDimmableLightConfig = esp_zb_color_dimmable_light_cfg_t
 extension ColorDimmableLightConfig {
     
@@ -26,15 +36,7 @@ extension ColorDimmableLightConfig {
         )
     }
 }
-extension ZigbeeConfig {
-    static var dimmableLight: ZigbeeConfig {
-        .init(
-            esp_zb_role: DeviceType.router.rawCValue,
-            install_code_policy: false,
-            nwk_cfg : .init(zczr_cfg: .init(max_children: 10))
-        )
-    }
-}
+
 extension BasicClusterConfig {
     static var dimmableLight: BasicClusterConfig {
         .init(zcl_version : ZCL.Basic.zclVersion,

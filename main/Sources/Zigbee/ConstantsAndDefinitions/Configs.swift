@@ -8,11 +8,11 @@
 //MARK: ZIGBEE CONFIG
 typealias ZigbeeConfig = esp_zb_cfg_t
 extension ZigbeeConfig {
-    init (role: DeviceType = .router,
+    init (role:        DeviceType = .router,
           installCodePolicy: Bool = false,
-          maxChildren: UInt8 = 10,
-          timeOut: UInt8 = 30,
-          keepAlive: UInt32 = 3000) 
+          maxChildren:      UInt8 = 10,
+          timeOut:          UInt8 = 30,
+          keepAlive:       UInt32 = 3000) 
     {
         print ("\(#function) start init")
         self.init(
