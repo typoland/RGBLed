@@ -16,15 +16,27 @@ func zigbeeTask(_ parameter: UnsafeMutableRawPointer?) {  //(_ parameters: Unsaf
                                               identifier: "OjTamOjTam")
     else {fatalError("cannot create Light")}
     
+    //MARK: Register device End Point
+    switch runEsp({esp_zb_device_register(light.endPoint)}) {
+    case .success: break
+    case .failure(let err): fatalError("Register End Point Failed \(err)")
+    }
+    //MARK: Register handler
+    esp_zb_core_action_handler_register(actionHandler)
+    print("💡✅\(#function) done")
+    
+    
+    
+    
+    
+    
     esp_zb_set_primary_network_channel_set(ESP_ZB_TRANSCEIVER_ALL_CHANNELS_MASK)
     
     //ESP_ERROR_CHECK(esp_zb_start(false))
     switch runEsp({esp_zb_start(false)}) {
     case .success: break
     case .failure(let err): fatalError("can`t run zigbee \(err)") 
-    }
-    print ("⏺️ \(#function) Light config")
-    
+    }    
     print ("⏺️ \(#function)...go to main loop")
     esp_zb_stack_main_loop()
 }

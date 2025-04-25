@@ -9,6 +9,7 @@ enum ZigbeeError:Swift.Error {
     case nvsFlashInitFailed(String)
     case platformConfigFailed(String)
     case cantGetMessageFromPointer
+    case deviceRegisterFailed(String)
     case manufacturerInfoFailed(String)
     var description: String {
         switch self {
@@ -18,6 +19,8 @@ enum ZigbeeError:Swift.Error {
             return "Start Failed: \(string)"
         case .manufacturerInfoFailed(let string): 
             return "Manufacturer Info Failed: \(string)"
+        case .deviceRegisterFailed(let string): 
+            return "Device Register Failed: \(string)"
         case .cantGetMessageFromPointer:
             return "Cant get message from pointer"
         }

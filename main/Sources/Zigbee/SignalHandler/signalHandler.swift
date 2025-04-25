@@ -1,15 +1,5 @@
-//
-//  SignalHandler.swift
-//  
-//
-//  Created by Łukasz Dziedzic on 21/04/2025.
-//
-
-
-
 @_cdecl("esp_zb_app_signal_handler")
 public func signalHandler(_ signal: UnsafeMutablePointer<esp_zb_app_signal_t>?) {
-    print ("signal handler \(signal == nil ? "❌" : "✅")")
     guard let signal = signal else { return }
     
     let p_sg_p = signal.pointee.p_app_signal

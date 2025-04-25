@@ -1,5 +1,5 @@
 //esp_zb_core_action_callback_id_s
-enum CoreActionCallbackID: UInt16 {
+enum CoreActionCallbackID: UInt32 {
     case setAttrValue                      = 0x0000 // ESP_ZB_CORE_SET_ATTR_VALUE_CB_ID
     case scenesStoreScene                  = 0x0001 // ESP_ZB_CORE_SCENES_STORE_SCENE_CB_ID
     case scenesRecallScene                 = 0x0002 // ESP_ZB_CORE_SCENES_RECALL_SCENE_CB_ID
@@ -80,8 +80,8 @@ enum CoreActionCallbackID: UInt16 {
     case greenPowerRecv                   = 0x1F00 // ESP_ZB_CORE_CMD_GREEN_POWER_RECV_CB_ID
     case reportAttr                       = 0x2000 // ESP_ZB_CORE_REPORT_ATTR_CB_ID
     
-    var rawCValue: UInt16 {
-        return self.rawValue
+    var rawCValue: esp_zb_core_action_callback_id_s {
+        return esp_zb_core_action_callback_id_s(self.rawValue)
     }
     
 }
