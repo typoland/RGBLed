@@ -26,13 +26,36 @@ public func signalHandler(_ signal: UnsafeMutablePointer<esp_zb_app_signal_t>?) 
         else {print ("❌ Initialize Zigbee stack failed"); return }
     case .deviceFirstStart, .deviceReboot:
         print ("#️⃣ device first start, reboot")
+        if errStatus == ESP_OK {
+            if (esp_zb_bdb_is_factory_new()) {
+                print ("#️⃣\(#function) Start network steering") 
+                esp_zb_bdb_start_top_level_commissioning (
+                    UInt8(ESP_ZB_BDB_MODE_NETWORK_STEERING.rawValue)
+                )
+            } else {
+                print ("#️⃣\(#function) Device rebooted");
+            }
+        } else {
+            print ("#️⃣\(#function) \(esp_zb_zdo_signal_to_string(esp_zb_app_signal_type_t(sigType))) failed with status: \(esp_err_to_name(errStatus)), retrying")
+                     
+            esp_zb_scheduler_alarm(
+                bdb_start_top_level_commissioning_cb,
+                UInt8(ESP_ZB_BDB_MODE_INITIALIZATION.rawValue),
+                1000
+            )
+        }
     case .steering:
         print ("#️⃣ steering")
     case .permitJoinStatus:
         print ("#️⃣ permit Join Status")
     case .productionConfigReady:
         print ("#️⃣ production Config Ready")
-    default: print ("no this time \(sigType)")
+    default: print ("not this time \(sigType)")
+    }
+    
+    func bdb_start_top_level_commissioning_cb(_ mode_mask: UInt8) {
+        let result = esp_zb_bdb_start_top_level_commissioning(mode_mask)
+        assert(result == ESP_OK, "Failed to start Zigbee commissioning")
     }
 }
 
