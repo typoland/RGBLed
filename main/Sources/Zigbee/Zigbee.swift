@@ -12,19 +12,20 @@ class Zigbee {
     }
     
     static func start() throws (Error) {
+        print ("\(#function) Start")
         switch runEsp({nvs_flash_init()}) {
         case .success: break
         case .failure(let err): throw .startFailed(err)
         }
+        print ("\(#function) NVS Flash inited")
         
         var config = PlatformConfig () // .native, .none
-        
         switch runEsp({esp_zb_platform_config(&config)}) {
         case .success: break
         case .failure(let err): throw .startFailed(err)
         }
-
+        print ("\(#function) Platform configurated")
         xTaskCreate(zigbeeTask, "Zigbee_main", 4096, nil, 5, nil)
-        print ("Zigbee started")
+        print ("\(#function) Zigbee started")
     }
 }

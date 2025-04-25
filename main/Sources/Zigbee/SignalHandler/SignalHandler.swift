@@ -76,11 +76,13 @@ var actionHandler @convention(c) (esp_zb_core_action_callback_id_t,
 */
 @_cdecl("esp_zb_task")
 func zigbeeTask(_ parameter: UnsafeMutableRawPointer?) {  //(_ parameters: UnsafeMutablePointer<esp_zb_task_param_t>?) {
-    print ("start Zigbee Task")
+    print ("\(#function): start Zigbee Task")
     var config = ZigbeeConfig(role: .router,
                               installCodePolicy: false,
                               maxChildren: 10)
     esp_zb_init(&config)
+    
+    print ("\(#function): let make some light")
     guard let light = try? ColorDimmableLight(name: "Experyment", 
                                               identifier: "OjTamOjTam")
     else {fatalError("cannot create Light")}

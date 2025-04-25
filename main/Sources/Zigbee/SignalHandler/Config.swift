@@ -14,15 +14,22 @@ extension ZigbeeConfig {
           timeOut: UInt8 = 30,
           keepAlive: UInt32 = 3000) 
     {
-        self.init()
-        esp_zb_role = role.rawCValue
-        install_code_policy = installCodePolicy //INSTALLCODE_POLICY_ENABLE
-        nwk_cfg = .init() 
+        print ("\(#function) start init")
+        self.init(
+            esp_zb_role: role.rawCValue,
+            install_code_policy: installCodePolicy,
+            nwk_cfg : .init()
+        )
+        print ("\(#function) base inited")
+//        esp_zb_role = role.rawCValue
+//        install_code_policy = installCodePolicy //INSTALLCODE_POLICY_ENABLE
+//        nwk_cfg = .init() 
         
         self.nwk_cfg.zczr_cfg = .init(max_children: maxChildren)
         self.nwk_cfg.zed_cfg  = .init(ed_timeout: timeOut, 
                                       keep_alive: keepAlive)
         
+        print ("\(#function) done")
     }
 }
 //MARK: RADIO CONFIG
@@ -90,25 +97,4 @@ typealias LevelClusterConfig = esp_zb_level_cluster_cfg_t
 
 typealias ColorClusterConfig = esp_zb_color_cluster_cfg_t
 
-typealias ColorDimmableLightConfig = esp_zb_color_dimmable_light_cfg_t
-extension ColorDimmableLightConfig {
-    
-    init (basicConfig:  BasicClusterConfig = .dimmableLight,
-          identifyConfig: IdentifyClusterConfig = .dimmableLight,
-          groupsConfig:   GroupsClusterConfig = .init(),
-          scenesConfig:   ScenesConfig = .init(),
-          onOffConfig:   OnOffClusterConfig = .init(),
-          levelConfig:    LevelClusterConfig = .init(),
-          colorConfig:    ColorClusterConfig = .init()
-    ) {
-        self.init()
-        basic_cfg = basicConfig
-        identify_cfg = identifyConfig
-        groups_cfg = groupsConfig
-        scenes_cfg = scenesConfig
-        on_off_cfg = onOffConfig
-        level_cfg = levelConfig
-        color_cfg = colorConfig
-    }
-}
 

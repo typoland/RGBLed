@@ -6,6 +6,7 @@
 //
 
 class ColorDimmableLight {
+    
     enum Error: Swift.Error {
         case endPointCreateFailed
         case zigbee(String)
@@ -20,10 +21,10 @@ class ColorDimmableLight {
     
     init(name: String = "Unknown",
          identifier: String = "experiment",
-         lightConfig: ColorDimmableLightConfig? = nil) throws (Error)
+         lightConfig: ColorDimmableLightConfig = .init()) throws (Error)
     {
-        print ("Init Dimmable color Light...")
-        var config = lightConfig ?? ColorDimmableLightConfig()
+        print ("💡➡️\(#function) Init Dimmable color Light...<\(name)> <\(identifier)>")
+        var config = lightConfig
         guard let list = Self.colorDimmableLightEndPointCreate(
             Self.endpoint, 
             &config)
@@ -35,14 +36,8 @@ class ColorDimmableLight {
             name: name,
             identifier: identifier
         )
-        do {
-            try manufacturerInfo.add(to: endPointListP,
-                                  endpointId: Self.endpoint)
-       
-        
-//        do { try addBasicManufacturerInfo(to: endPointListP, 
-//                                         endpointId: Self.endpoint, 
-//                                         info: &manufacturerInfo)
+        do {  try manufacturerInfo.add(to: endPointListP,
+                                       endpointId: Self.endpoint)
         } catch (let error) { throw .zigbee(error.description) }
         
         switch runEsp({esp_zb_device_register(endPointListP)}) {
@@ -50,7 +45,7 @@ class ColorDimmableLight {
         case .failure(let err): throw .deviceRegisterFailed(err)
         }
         esp_zb_core_action_handler_register(actionHandler)
-        print("done")
+        print("💡✅\(#function) done")
     }
     
     @_silgen_name("esp_zb_color_dimmable_light_ep_create")
@@ -61,19 +56,9 @@ class ColorDimmableLight {
     
     var actionHandler: @convention(c) (esp_zb_core_action_callback_id_t, UnsafeRawPointer?) 
     -> esp_err_t = { actionID, messagePtr in
-        print ("Action Handler ready!")
+        print ("✅\(#function) Action Handler ready!")
         return ESP_OK
     }
 }
 
 
-extension BasicClusterConfig {
-    static var dimmableLight: BasicClusterConfig {
-        .init()
-    }
-}
-extension IdentifyClusterConfig {
-    static var dimmableLight: IdentifyClusterConfig {
-        .init()
-    }
-}

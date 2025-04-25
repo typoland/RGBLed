@@ -1,11 +1,8 @@
 
 @_cdecl("app_main")
 func app_main() {
-    do {
-        try Zigbee.start()
-    } catch  {
-        print ("Zigbee start Failed")
-    }
+    do { try Zigbee.start()
+    } catch  { print ("Zigbee start Failed")}
     
     let rgbLedChannels = RGB (
         r: LedChannelAssign(channel: LEDC_CHANNEL_3, gpio: 22),
@@ -13,7 +10,7 @@ func app_main() {
         b: LedChannelAssign(channel: LEDC_CHANNEL_5, gpio: 3)
     )
     let rgbLed = try! RGBLed(channels: rgbLedChannels, timerNumber: LEDC_TIMER_2)
-    rgbLed.setColor(r: 30, g: 200, b: 0)
+    rgbLed.setColor(r: 80, g: 20, b: 5)
     /*
     let redLedChannel = LedChannelAssign(channel: LEDC_CHANNEL_1, gpio: 10)    
     let redLed = try! MonchromeLed(channel: redLedChannel)
@@ -38,10 +35,10 @@ func app_main() {
 //    var greenFadeParams = FadeParameters.pulse(steps: 100, up: 50, down: 60)
 //    var blueFadeParams = FadeParameters.pulse(steps: 100, up: 100, down: 10)
 //    
-    switch runEsp({ledc_fade_func_install(ESP_INTR_FLAG_LEVEL1)}) {
-    case .success: break
-    case .failure(let err): print ("\(err)")
-    }
+//    switch runEsp({ledc_fade_func_install(ESP_INTR_FLAG_LEVEL1)}) {
+//    case .success: break
+//    case .failure(let err): print ("\(err)")
+//    }
    
     print ("OK")
     /*
