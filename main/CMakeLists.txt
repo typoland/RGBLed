@@ -3,7 +3,9 @@ idf_component_register(
     SRCS /dev/null # We don't have any C++ sources
     PRIV_INCLUDE_DIRS "." 
     "../components/zcl_utility/src"
-    "../components/zcl_utility/include"   
+    "../components/zcl_utility/include" 
+    "../components/light_driver/src"
+    "../components/light_driver/include"   
 )
 
 

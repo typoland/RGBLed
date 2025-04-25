@@ -8,22 +8,22 @@
 //MARK: ZIGBEE CONFIG
 typealias ZigbeeConfig = esp_zb_cfg_t
 extension ZigbeeConfig {
-    init (role:        DeviceType = .router,
-          installCodePolicy: Bool = false,
-          maxChildren:      UInt8 = 10,
+    init (role:        DeviceType,
+          installCodePolicy: Bool,
+          maxChildren:      UInt8,
           timeOut:          UInt8 = 30,
           keepAlive:       UInt32 = 3000) 
     {
-        print ("\(#function) start init")
+        print ("🐝\(#function) start init")
         self.init(
             esp_zb_role: role.rawCValue,
             install_code_policy: installCodePolicy,
             nwk_cfg : .init(zczr_cfg: .init(max_children: maxChildren))
         )
-        print ("\(#function) base inited")
+        print ("🐝\(#function) base inited")
         self.nwk_cfg.zed_cfg  = .init(ed_timeout: timeOut, 
                                       keep_alive: keepAlive)
-        print ("\(#function) done")
+        print ("🐝\(#function) done")
     }
 }
 //MARK: RADIO CONFIG
@@ -31,9 +31,10 @@ typealias RadioConfig = esp_zb_radio_config_t
 extension RadioConfig {
     init (mode: RadioMode = .native) 
     {
-        self.init()
-        radio_mode =        mode.rawCValue
-        radio_uart_config = .init() 
+        self.init(
+            radio_mode       :  mode.rawCValue,
+            radio_uart_config: .init() 
+        )
     }
 }
 //MARK: HOST CONFIG    
@@ -55,7 +56,7 @@ extension PlatformConfig {
          host: HostConfig   = .init()) 
     {
         self.init( radio_config : radio,
-                   host_config  : host
+               host_config  : host
         )
     }
 }
@@ -66,9 +67,10 @@ extension BasicClusterConfig {
     init (zclVersion: UInt8 = ZCL.Basic.zclVersion,
           powerSource: UInt8 = ZCL.Basic.powerSource) 
     {
-        self.init()
-        zcl_version =  zclVersion
-        power_source = powerSource // ESP_ZB_ZCL_BASIC_POWER_SOURCE_DEFAULT_VALUE,
+        self.init(
+            zcl_version  : zclVersion,
+            power_source : powerSource // ESP_ZB_ZCL_BASIC_POWER_SOURCE_DEFAULT_VALUE,
+        )
     }
 }
 
@@ -76,8 +78,9 @@ extension BasicClusterConfig {
 typealias IdentifyClusterConfig = esp_zb_identify_cluster_cfg_t
 extension IdentifyClusterConfig {
     init (identifyTime: UInt16 = ZCL.identifyTimeDefaultValue) {
-        self.init()
-        identify_time = ZCL.identifyTimeDefaultValue //UInt16(ESP_ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE) 
+        self.init(
+            identify_time : ZCL.identifyTimeDefaultValue
+        )//UInt16(ESP_ZB_ZCL_IDENTIFY_IDENTIFY_TIME_DEFAULT_VALUE) 
     }
 }
 

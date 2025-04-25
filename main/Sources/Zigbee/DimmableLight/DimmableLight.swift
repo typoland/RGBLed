@@ -9,41 +9,45 @@ class ColorDimmableLight {
     
     enum Error: Swift.Error {
         case endPointCreateFailed
-        case zigbee(String)
+        case zigbee(ZigbeeError)
         case deviceRegisterFailed(String)
         case actionHandlerRegisterFailed(String) 
     }
     
-    static let endpoint: UInt8 = 10 //HA_COLOR_DIMMABLE_LIGHT_ENDPOINT  10
+    static let endPointId: UInt8 = 10 //HA_COLOR_DIMMABLE_LIGHT_ENDPOINT  10
     
-    var endPointListP: UnsafeMutablePointer<esp_zb_ep_list_s> // esp_zb_ep_list_t?
-    var config: ColorDimmableLightConfig
+    var endPoint: UnsafeMutablePointer<esp_zb_ep_list_s> // esp_zb_ep_list_t?
+    //var config: ColorDimmableLightConfig
     
     init(name: String = "Unknown",
          identifier: String = "experiment",
          lightConfig: ColorDimmableLightConfig = .init()) throws (Error)
     {
         print ("💡➡️\(#function) Init Dimmable color Light...<\(name)> <\(identifier)>")
-        var config = lightConfig
-        guard let list = Self.colorDimmableLightEndPointCreate(
-            Self.endpoint, 
-            &config)
-        else {throw .endPointCreateFailed}
-        self.endPointListP = list
-        self.config = config
         
+        //MARK: create End Point
+        var config = lightConfig
+        guard let endPoint = Self.colorDimmableLightEndPointCreate(
+            Self.endPointId, &config)
+        else {throw .endPointCreateFailed}
+        self.endPoint = endPoint
+        //self.config = config
+        
+        //MARK: Define Manufacturer 
         var manufacturerInfo = Manufacturer(
             name: name,
-            identifier: identifier
+            identifier: "esp32h2" //identifier
         )
-        do {  try manufacturerInfo.add(to: endPointListP,
-                                       endpointId: Self.endpoint)
-        } catch (let error) { throw .zigbee(error.description) }
+        do {  try manufacturerInfo.add(to: endPoint,
+                                       endpointId: Self.endPointId)
+        } catch (let error) { throw .zigbee(error) }
         
-        switch runEsp({esp_zb_device_register(endPointListP)}) {
+        //MARK: Register device End Point
+        switch runEsp({esp_zb_device_register(endPoint)}) {
         case .success: break
         case .failure(let err): throw .deviceRegisterFailed(err)
         }
+        //MARK: Register handler
         esp_zb_core_action_handler_register(actionHandler)
         print("💡✅\(#function) done")
     }
