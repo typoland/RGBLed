@@ -87,4 +87,44 @@ enum AppSignalType: UInt32 {
         guard T.self == payloadType as? T.Type else { return nil }
         return pointer.assumingMemoryBound(to: T.self).pointee
     }
+    
+    var description: String {
+        switch self {
+        case .defaultStart: return "Non-BDB commissioning start"
+        case .skipStartup: return "Stack framework ready"
+        case .deviceAnnce: return "Device announced"
+        case .leave: return "Device left"
+        case .error: return "Invalid signal"
+        case .deviceFirstStart: return "Factory-new init complete"
+        case .deviceReboot: return "Join/rejoin from config"
+        case .touchlinkNwkStarted: return "Touchlink initiator started network"
+        case .touchlinkNwkJoinedRouter: return "Touchlink target joined"
+        case .touchlink: return "Touchlink commissioning result"
+        case .steering: return "BDB network steering done"
+        case .formation: return "BDB formation done"
+        case .findingAndBindingTargetFinished: return "F&B target timeout"
+        case .findingAndBindingInitiatorFinished: return "F&B initiator finished"
+        case .touchlinkTarget: return "Touchlink target commissioning"
+        case .touchlinkNwk: return "Touchlink target network start"
+        case .touchlinkTargetFinished: return "Touchlink target done"
+        case .deviceAssociated: return "New device associated"
+        case .leaveIndication: return "Child left indication"
+        case .zgpCommissioning: return "ZGP commissioning"
+        case .canSleep: return "Ready for sleep"
+        case .productionConfigReady: return "Production config restored"
+        case .noActiveLinksLeft: return "Routing table expired"
+        case .deviceAuthorized: return "Device authorized"
+        case .deviceUpdate: return "Join/rejoin/leave info updated"
+        case .panIdConflictDetected: return "PAN ID conflict detected"
+        case .nlmeStatusIndication: return "NWK status indication"
+        case .tcRejoinDone: return "Trust Center rejoin complete"
+        case .permitJoinStatus: return "Permit join updated"
+        case .steeringCancelled: return "Steering cancelled"
+        case .formationCancelled: return "Formation cancelled"
+        case .zgpModeChange: return "ZGP mode changed"
+        case .deviceUnavailable: return "Destination unreachable"
+        case .zgpApproveCommissioning: return "ZGP approve commissioning"
+        case .signalEnd: return "End of signal enum"
+        }
+    }
 } // end of AppSignalType
