@@ -16,13 +16,12 @@ class ColorDimmableLight {
     static let endPointId: UInt8 = 10 //HA_COLOR_DIMMABLE_LIGHT_ENDPOINT  10
     
     var endPoint: UnsafeMutablePointer<esp_zb_ep_list_s> // esp_zb_ep_list_t?
-    //var config: ColorDimmableLightConfig
     
     init(name: String = "Unknown",
          identifier: String = "experiment",
          lightConfig: ColorDimmableLightConfig = .init()) throws (Error)
     {
-        print ("💡➡️\(#function) Init Dimmable color Light...<\(name)> <\(identifier)>")
+        print ("✳️💡\(#function) Init Dimmable color Light...<\(name)> <\(identifier)>")
         
         //MARK: create End Point
         var config = lightConfig
@@ -33,7 +32,7 @@ class ColorDimmableLight {
         //self.config = config
         
         //MARK: Define Manufacturer 
-        var manufacturerInfo = Manufacturer(
+        let manufacturerInfo = Manufacturer(
             name: name,
             identifier: identifier
         )

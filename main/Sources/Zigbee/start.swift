@@ -11,6 +11,7 @@ enum ZigbeeError:Swift.Error {
     case cantGetMessageFromPointer
     case deviceRegisterFailed(String)
     case manufacturerInfoFailed(String)
+
     var description: String {
         switch self {
         case .nvsFlashInitFailed(let string):

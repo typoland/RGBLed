@@ -4,8 +4,8 @@ idf_component_register(
     PRIV_INCLUDE_DIRS "." 
     "../components/zcl_utility/src"
     "../components/zcl_utility/include" 
-    "../components/light_driver/src"
-    "../components/light_driver/include"   
+    #"../components/light_driver/src"
+    #"../components/light_driver/include"   
 )
 
 
